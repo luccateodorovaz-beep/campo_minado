@@ -1,6 +1,6 @@
 ; ======================================================================================
 ;                              C A M P O   M I N A D O
-;                          por: Pedro Covisi e Lucca Vaz
+;                   por: Pedro Covisi, Lucca Vaz e Antônio Carvalho
 ; ======================================================================================
 
 jmp main
@@ -10,7 +10,7 @@ jmp main
 Tabuleiro: var #100
 
 ; posicao do cursor
-PosCursos: var #1
+PosCursor: var #1
 PosAntCursos: var #1
 
 ; controle de estado do jogo
@@ -34,7 +34,7 @@ Rand: var #30
 MsgTitulo: string "
  ======================================================================================
                               C A M P O   M I N A D O
-                          por: Pedro Covisi e Lucca Vaz
+                   por: Pedro Covisi, Lucca Vaz e Antônio Carvalho
  ======================================================================================
 "
 MsgComandos: string "Comandos:    Andar - WASD | Revelar - ESPAÇO | Colocar/tirar bandeira - F"
@@ -48,7 +48,7 @@ MsgVitoria: string "PARABENS! Você venceu!"
 
 main: 
     call ApagaTela
-    call IniciarVariaveis
+    call IniciaVariaveis
     call GeraBombas
     call CalculaDicas
 
@@ -57,5 +57,50 @@ main:
     call DesenhaCursor
 
 LoopPrincipal:
-    load R0
+    load R0, GameOver
+    loadn r1, #0
+    cmp r0, r1
+    jne FimDeJogo
 
+    call LeTeclado
+
+    call MoveCursor
+    call AcaoJogador
+    
+    call Delay
+
+    jmp LoopPrincipal
+
+FimDeJogo:
+    call TelaFinal
+    halt
+
+; ===================================================================
+; INÍCIO DAS SUBROTINAS
+; ===================================================================
+
+IniciaVariaveis:
+    push r0
+    loadn r0, #0
+    store PosCursor, r0
+    store PosAntCursor, r0
+    store GameOver, r0
+    store IncRand, r0
+    pop r0
+    rts
+
+ApagaTela:
+    push r0
+    push r1
+
+    loadn r0, #1200
+    loadn r1, #' '
+
+ApagaTela_Loop:
+    dec r0
+    outchar r1, r0
+    jnz ApagaTela_Loop
+
+    pop r1
+    pop r0
+    rts
