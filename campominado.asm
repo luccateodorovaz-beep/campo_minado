@@ -74,6 +74,7 @@ main:
     call ApagaTela
     call IniciaVariaveis
     call DesenhaCenario
+    call TelaInicial
     call GeraBombas
     call CalculaDicas
 
@@ -357,6 +358,44 @@ ImprimeTabuleiro_Prox:
 
 ImprimeTabuleiro_Fim:
     pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+
+; ===================================================================
+; TelaInicial: Espera o jogador apertar uma tecla e gera a semente
+; ===================================================================
+TelaInicial:
+    push r0     ; Guarda o input do teclado
+    push r1     ; Guarda 255 (nenhuma tecla)
+    push r2     ; O nosso contador super rapido (0 a 29)
+    push r3     ; Limite do contador (30)
+
+    loadn r1, #255
+    loadn r2, #0
+    loadn r3, #30
+
+TelaInicial_Loop:
+    inchar r0               ; Le o teclado sem travar
+    cmp r0, r1              ; Compara com 255
+    jne TelaInicial_Fim     ; Se for diferente (apertou algo!), sai do loop
+
+    ; Se nao apertou nada, incrementa o nosso "relogio"
+    inc r2
+    cmp r2, r3              ; Chegou em 30?
+    jne TelaInicial_Loop    ; Se nao chegou, volta a ler o teclado
+    
+    loadn r2, #0            ; Se chegou em 30, zera e volta a ler
+    jmp TelaInicial_Loop
+
+TelaInicial_Fim:
+    ; O jogador apertou uma tecla!
+    ; Salva o numero imprevisivel de r2 no IncRand
+    store IncRand, r2       
+
     pop r3
     pop r2
     pop r1
