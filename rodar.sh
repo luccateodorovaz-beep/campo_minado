@@ -1,6 +1,14 @@
 #!/bin/bash
-./montador $1.asm $1.mif
-./sim $1.mif charmap.mif
+cat partes/01_variaveis.asm \
+    partes/02_main.asm \
+    partes/03_inicializa.asm \
+    partes/04_tabuleiro.asm \
+    partes/05_cursor.asm \
+    partes/06_jogador.asm \
+    partes/07_misc.asm > campominado.asm
 
-#para executar use: 
-#./rodar.sh [nome do arquivo sem extensao]
+./montador campominado.asm campominado.mif
+./sim campominado.mif charmap.mif
+
+#para executar use:
+#./rodar.sh
