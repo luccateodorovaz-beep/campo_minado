@@ -131,9 +131,9 @@ IniciaVariaveis_Loop:
     storei r3, r0
     jnz IniciaVariaveis_Loop
 
-    pop r3
     pop r2
     pop r1
+    pop r0
     rts
 
 ApagaTela:
@@ -172,26 +172,36 @@ GeraBombas:
     loadn r4, #1    ; mascara or para setar a bomba (bit 0)
 
 GeraBombasLoop:
-    ; acessa a posiçao do vetor rand
-    add r5, r2, r1      ; soma o endereço do vetor (r2), com o nosso indice (r1) e guarda em r5
-    loadi r5, r5    ; carrega o valor que esta no endereço apontado por r5 no proprio r5
-      
-    ; vai ate a posicao sorteada e liga o bit da bomba
-    add r5, r3, r5
-    loadi r7, r5     ; r7 = le o que tem la atualmente
-    or r7, r7, r4    ; faz or com 1. se estava 0, vira 1.
-    storei r5, r7
+    ; acessa a posicao do vetor rand
+    add r5, r2, r1
+    loadi r5, r5
 
+    ; vai ate a posicao sorteada
+    add r5, r3, r5
+    loadi r7, r5         ; r7 = valor atual da celula
+
+    ; verifica se ja tem bomba para nao contar posicao duplicada
+    and r6, r7, r4       ; r6 = r7 & 1
+    cmp r6, r4
+    jeq GeraBombas_Duplicata
+
+    ; coloca a bomba e decrementa contador
+    or r7, r7, r4
+    storei r5, r7
+    dec r0
+
+GeraBombas_Duplicata:
     ; atualiza o indice de rand para nao repetir numero
     inc r1
     loadn r6, #30
-    cmp r1, r6      ; compara se chegou no fim da tabela (30)
+    cmp r1, r6
     jne GeraBombas_PulaReset
     loadn r1, #0
-   
+
 GeraBombas_PulaReset:
-    dec r0      ; decrementa de bombas restantes
-    jnz GeraBombasLoop
+    loadn r6, #0
+    cmp r0, r6
+    jne GeraBombasLoop
 
     store IncRand, r1
 
@@ -210,7 +220,6 @@ GeraBombas_PulaReset:
 ; Sugestao de responsavel: Lucca
 ; ===================================================================
 CalculaDicas:
- CalculaDicas:
     push r0
     push r1
     push r2
@@ -247,9 +256,9 @@ LoopCalculaDicas:
         push r0 ;Guarda o endereço de tabuleiro para depois 
         push r5; Guarda o contador principal 
 
-        loadn r0,#10;Vai estar em cima se r1 menor que 10 então:
-        cmp r1,r0 
-        jle FimTesteCima ; Se for menor que 10 pula para próxima verificação pois não tem ninguém em cima
+        loadn r0,#9 ; Se r1 <= 9 (linha 0), nao tem ninguem em cima
+        cmp r1,r0
+        jle FimTesteCima ; Se for <= 9, pula
 
         ;Caso continue aqui verificamos agora os que estão em cima
         loadn r5,#1 ;Usado para fazer o AND
@@ -452,10 +461,12 @@ DesenhaCursor:
 ; Sugestao de responsavel: Covisi
 ; ===================================================================
 LeTeclado:
-    ; O QUE FAZER:
-    ; 1. Usar a instrucao 'inchar'.
-    ; 2. Se retornar 255, significa que nada foi apertado -> Grava 255 em 'Letra' e sai.
-    ; 3. Se retornar outra coisa, grava o valor na variavel global 'Letra'.
+    push r0
+
+    inchar r0
+    store Letra, r0
+
+    pop r0
     rts
 
 ; ===================================================================
@@ -463,14 +474,97 @@ LeTeclado:
 ; Sugestao de responsavel: Lucca
 ; ===================================================================
 MoveCursor:
-    ; O QUE FAZER:
-    ; 1. Ler a variavel 'Letra'.
-    ; 2. Comparar com 'w', 'a', 's', 'd'.
-    ; 3. Se for 'w' (cima), subtrai 10 do 'PosCursor'.
-    ; 4. Se for 's' (baixo), soma 10 no 'PosCursor'.
-    ; 5. Se for 'a' (esquerda), subtrai 1. (Cuidado: usar MOD 10 pra nao vazar a linha).
-    ; 6. Se for 'd' (direita), soma 1. (Cuidado: usar MOD 10 pra nao vazar a linha).
-    ; 7. Atualizar 'PosAntCursor' com o valor antigo antes de mudar.
+    push r0
+    push r1
+    push r2
+    push r3
+
+    load r0, Letra
+
+    loadn r1, #'w'
+    cmp r0, r1
+    jeq MoveCursor_Cima
+
+    loadn r1, #'s'
+    cmp r0, r1
+    jeq MoveCursor_Baixo
+
+    loadn r1, #'a'
+    cmp r0, r1
+    jeq MoveCursor_Esquerda
+
+    loadn r1, #'d'
+    cmp r0, r1
+    jeq MoveCursor_Direita
+
+    jmp MoveCursor_Fim
+
+MoveCursor_Cima:
+    load r1, PosCursor
+    loadn r2, #9
+    cmp r1, r2
+    jle MoveCursor_Fim      ; posicao <= 9 = linha 0, nao move
+    store PosAntCursor, r1
+    loadn r2, #10
+    sub r1, r1, r2
+    store PosCursor, r1
+    jmp MoveCursor_Fim
+
+MoveCursor_Baixo:
+    load r1, PosCursor
+    loadn r2, #89
+    cmp r1, r2
+    jgr MoveCursor_Fim      ; posicao > 89 = linha 9, nao move
+    store PosAntCursor, r1
+    loadn r2, #10
+    add r1, r1, r2
+    store PosCursor, r1
+    jmp MoveCursor_Fim
+
+MoveCursor_Esquerda:
+    load r1, PosCursor
+    load r3, PosCursor      ; r3 = copia para calcular coluna via MOD 10
+MoveCursor_ModEsq:
+    loadn r2, #9
+    cmp r3, r2
+    jle MoveCursor_ModEsqFim
+    loadn r2, #10
+    sub r3, r3, r2
+    jmp MoveCursor_ModEsq
+MoveCursor_ModEsqFim:
+    loadn r2, #0
+    cmp r3, r2
+    jeq MoveCursor_Fim      ; coluna 0, nao move para esquerda
+    store PosAntCursor, r1
+    loadn r2, #1
+    sub r1, r1, r2
+    store PosCursor, r1
+    jmp MoveCursor_Fim
+
+MoveCursor_Direita:
+    load r1, PosCursor
+    load r3, PosCursor      ; r3 = copia para calcular coluna via MOD 10
+MoveCursor_ModDir:
+    loadn r2, #9
+    cmp r3, r2
+    jle MoveCursor_ModDirFim
+    loadn r2, #10
+    sub r3, r3, r2
+    jmp MoveCursor_ModDir
+MoveCursor_ModDirFim:
+    loadn r2, #9
+    cmp r3, r2
+    jeq MoveCursor_Fim      ; coluna 9, nao move para direita
+    store PosAntCursor, r1
+    loadn r2, #1
+    add r1, r1, r2
+    store PosCursor, r1
+
+MoveCursor_Fim:
+    pop r3
+    pop r2
+    pop r1
+    pop r0
     rts
 
 ; ===================================================================
