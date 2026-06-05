@@ -62,6 +62,9 @@ MsgTitulo: string "
                    por: Pedro Covisi, Lucca Vaz e Antônio Carvalho
  ======================================================================================
 "
-MsgComandos: string "Comandos:    Andar - WASD | Revelar - ESPAÇO | Colocar/tirar bandeira - F"
-MsgDerrota: string "B O O M!! Você pisou em uma mina."
-MsgVitoria: string "PARABENS! Você venceu!"
+MsgComandos: string "Comandos:\nAndar - WASD\nRevelar - ESPACO\nColocar/tirar bandeira - F"
+MsgDerrota: string "B O O M!! Voce pisou em uma mina."
+MsgVitoria: string "PARABENS! Voce venceu!"
+MsgTelaInicial: string "Pressione qualquer tecla para comecar"
+
+

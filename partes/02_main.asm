@@ -21,10 +21,19 @@ LoopPrincipal:
     jne FimDeJogo
 
     call LeTeclado
+    
+    load r0, Letra
+    loadn r1, #255
+    cmp r0, r1
+    jeq LoopPrincipal_PulaRender
 
     call MoveCursor
     call AcaoJogador
 
+    call ImprimeTabuleiro
+    call DesenhaCursor
+    
+LoopPrincipal_PulaRender:
     call Delay
 
     jmp LoopPrincipal

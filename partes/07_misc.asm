@@ -31,6 +31,13 @@ DesenhaCenario:
 ; TelaInicial: Espera o jogador apertar uma tecla e gera a semente
 ; ===================================================================
 TelaInicial:
+    call printcenario1Screen    ; Carrega a tela inicial (cenario1)
+
+    ; Imprime a mensagem na parte de baixo da tela
+    loadn r0, #MsgTelaInicial
+    loadn r1, #1120             ; Posicao na linha 28 (40 colunas * 28 = 1120)
+    call ImprimeStr
+
     push r0     ; Guarda o input do teclado
     push r1     ; Guarda 255 (nenhuma tecla)
     push r2     ; O nosso contador super rapido (0 a 29)
@@ -58,6 +65,61 @@ TelaInicial_Fim:
     ; Salva o numero imprevisivel de r2 no IncRand
     store IncRand, r2
 
+    ; Limpa a mensagem anterior desenhando o cenario novamente
+    call printtabuleiro100Screen
+
+    ; Imprime MsgComandos
+    loadn r0, #MsgComandos
+    loadn r1, #1000
+    call ImprimeStr
+
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
+; ===================================================================
+ImprimeStr:
+    push r0
+    push r1
+    push r2
+    push r3
+
+ImprimeStr_Loop:
+    loadi r2, r0
+    loadn r3, #'\0'
+    cmp r2, r3
+    jeq ImprimeStr_Fim
+
+    ; Verifica se e nova linha (\n ou ASCII 10)
+    loadn r3, #10
+    cmp r2, r3
+    jeq ImprimeStr_NewLine
+
+    outchar r2, r1
+    inc r1
+    inc r0
+    jmp ImprimeStr_Loop
+
+ImprimeStr_NewLine:
+    push r1
+    pop r2                  ; r2 = r1
+    
+    loadn r3, #40
+ImprimeStr_ModLoop:
+    cmp r3, r2
+    jgr ImprimeStr_ModEnd   ; Se 40 > r2 (ou seja, r2 < 40), sai do loop
+    sub r2, r2, r3          ; r2 = r2 - 40
+    jmp ImprimeStr_ModLoop
+ImprimeStr_ModEnd:
+    sub r1, r1, r2          ; r1 = r1 - (r1 % 40) -> inicio da linha atual
+    add r1, r1, r3          ; r1 = r1 + 40 -> inicio da proxima linha
+    
+    inc r0                  ; Avanca o ponteiro da string
+    jmp ImprimeStr_Loop
+
+ImprimeStr_Fim:
     pop r3
     pop r2
     pop r1

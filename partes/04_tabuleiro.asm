@@ -68,64 +68,113 @@ CalculaDicas:
     rts
 
 ;Bloco de desenho
-; ===================================================================
-; ImprimeTabuleiro: Desenha o grid 10x10 na tela
-; Sugestao de responsavel: Covisi
-; ===================================================================
-;ImprimeTabuleiro:
-    ; O QUE FAZER:
-    ; 1. Fazer um loop de 0 a 99 lendo o vetor Tabuleiro.
-    ; 2. Mapear o indice (0 a 99) para uma coordenada na tela (ex: centro da tela).
-    ; 3. Checar os bits de cada posicao:
-    ;    - Se Bit 1 (Revelado) == 0 e Bit 2 (Bandeira) == 0 -> Imprime '[ ]'
-    ;    - Se Bit 1 (Revelado) == 0 e Bit 2 (Bandeira) == 1 -> Imprime '[F]'
-    ;    - Se Bit 1 (Revelado) == 1 e Bit 0 (Bomba) == 1 -> Imprime ' * '
-    ;    - Se Bit 1 (Revelado) == 1 e nao tem bomba -> Imprime o numero de vizinhos
- ;   rts
 
 ; ===================================================================
-; ImprimeTabuleiro (VERSAO DEBUG TEMPORARIA)
+; ImprimeTabuleiro
 ; ===================================================================
 ImprimeTabuleiro:
-    push r0     ; contador do loop (0 a 99) / posicao na tela
-    push r1     ; limite do loop (100)
-    push r2     ; endereco base do Tabuleiro
-    push r3     ; auxiliar para ler memoria e imprimir
-    push r4     ; mascara do bit 0 (00000001)
-
+    push r0     ; logic index (0 to 99)
+    push r1     ; Y counter (0 to 9)
+    push r2     ; X counter (0 to 9)
+    push r3     ; Screen offset
+    push r4     ; value from memory
+    push r5     ; temp / char to print
+    push r6     ; screen offset helper
+    
     loadn r0, #0
-    loadn r1, #100
-    loadn r2, #Tabuleiro
-    loadn r4, #1
-
-ImprimeTabuleiro_DebugLoop:
-    cmp r0, r1
-    jeq ImprimeTabuleiro_Fim    ; se r0 == 100, acaba
-
-    ; Le o valor no Tabuleiro
-    add r3, r2, r0              ; r3 = Tabuleiro + i
-    loadi r3, r3                ; r3 = Valor da memoria
-    and r3, r3, r4              ; Isola o Bit 0 (Bomba)
-
-    ; Checa se tem bomba (resultado do AND for 1)
+    loadn r3, #90       ; Start pos (x=10, y=2) -> offset = 2*40 + 10 = 90
+    loadn r1, #0
+ImprimeTabuleiro_LoopY:
+    loadn r5, #10
+    cmp r1, r5
+    jeq ImprimeTabuleiro_Fim
+    
+    loadn r2, #0
+ImprimeTabuleiro_LoopX:
+    loadn r5, #10
+    cmp r2, r5
+    jeq ImprimeTabuleiro_NextY
+    
+    ; --- Draw logic ---
+    loadn r5, #Tabuleiro
+    add r5, r5, r0
+    loadi r4, r5        ; r4 recebe o valor que esta no Tabuleiro
+    
+    loadn r5, #4        ; mask bit 2 (bandeira)
+    and r4, r4, r5      ; isola o bit 2 em r4
+    
     loadn r5, #0
-    cmp r3, r5
+    cmp r4, r5
     jeq ImprimeTabuleiro_Vazio
 
-ImprimeTabuleiro_Bomba:
-    loadn r3, #'*'              ; Carrega o asterisco
-    outchar r3, r0              ; Imprime na tela na posicao r0
+ImprimeTabuleiro_Flag:
+    ; top-left: flag4 (char 12)
+    loadn r5, #12
+    outchar r5, r3
+    
+    ; top-right: flag3 (char 11)
+    loadn r5, #11
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    ; bottom-left: flag1 (char 9)
+    loadn r5, #9
+    push r3
+    pop r6
+    loadn r4, #40
+    add r6, r6, r4
+    outchar r5, r6
+    
+    ; bottom-right: flag2 (char 10)
+    loadn r5, #10
+    inc r6
+    outchar r5, r6
+    
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Vazio:
-    loadn r3, #'_'              ; Carrega underline
-    outchar r3, r0              ; Imprime na tela na posicao r0
+    ; top-left: grade4 (char 7)
+    loadn r5, #7
+    outchar r5, r3
+    
+    ; top-right: grade3 (char 6)
+    loadn r5, #6
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    ; bottom-left: grade1 (char 31)
+    loadn r5, #31
+    push r3
+    pop r6
+    loadn r4, #40
+    add r6, r6, r4
+    outchar r5, r6
+    
+    ; bottom-right: grade2 (char 5)
+    loadn r5, #5
+    inc r6
+    outchar r5, r6
 
 ImprimeTabuleiro_Prox:
     inc r0
-    jmp ImprimeTabuleiro_DebugLoop
+    loadn r5, #2
+    add r3, r3, r5      ; proxima coluna do tabuleiro pula 2 posicoes na tela
+    inc r2
+    jmp ImprimeTabuleiro_LoopX
+
+ImprimeTabuleiro_NextY:
+    inc r1
+    loadn r5, #60
+    add r3, r3, r5      ; pula 2 linhas para baixo e volta ao inicio do X (diff = +60)
+    jmp ImprimeTabuleiro_LoopY
 
 ImprimeTabuleiro_Fim:
+    pop r6
+    pop r5
     pop r4
     pop r3
     pop r2

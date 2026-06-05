@@ -4,10 +4,55 @@
 ;
 ; ===================================================================
 DesenhaCursor:
-    ; O QUE FAZER:
-    ; 1. Ler a variavel 'PosCursor'.
-    ; 2. Calcular onde isso fica na tela (mesma matematica do ImprimeTabuleiro).
-    ; 3. Mudar a cor do caractere ou desenhar um cursor visual (ex: '< >' em volta).
+    push r0
+    push r1
+    push r2
+    push r6
+    
+    load r0, PosCursor
+    loadn r6, #90       ; Start pos na tela (x=10, y=2) = offset 90
+    loadn r1, #9
+DesenhaCursor_DivLoop:
+    cmp r1, r0
+    jgr DesenhaCursor_DivEnd    ; se r1 > r0 (ou seja r0 <= 9), ja achou a linha
+    jeq DesenhaCursor_DivEnd    ; se r1 == r0, ja achou a linha
+    loadn r2, #10
+    sub r0, r0, r2      ; Subtrai 10 da posicao logica (equivale a subir 1 linha no tabuleiro)
+    loadn r2, #80
+    add r6, r6, r2      ; Soma 80 no offset da tela (pula 2 linhas de 40)
+    jmp DesenhaCursor_DivLoop
+DesenhaCursor_DivEnd:
+    add r0, r0, r0      ; r0 = r0 * 2 (cada X lógico ocupa 2 posições físicas na tela)
+    add r6, r6, r0      ; r6 agora tem o offset exato na tela
+    
+    ; top-left: cursor4 (char 16)
+    loadn r1, #16
+    outchar r1, r6
+    
+    ; top-right: cursor3 (char 15)
+    loadn r1, #15
+    push r6
+    pop r2
+    inc r2
+    outchar r1, r2
+    
+    ; bottom-left: cursor1 (char 13)
+    loadn r1, #13
+    push r6
+    pop r2
+    loadn r0, #40
+    add r2, r2, r0
+    outchar r1, r2
+    
+    ; bottom-right: cursor2 (char 14)
+    loadn r1, #14
+    inc r2
+    outchar r1, r2
+
+    pop r6
+    pop r2
+    pop r1
+    pop r0
     rts
 
 ; ===================================================================
@@ -61,38 +106,28 @@ MoveCursor_S:
     cmp r0, r2
     jne MoveCursor_A            ; nao e 's', testa proximo
 
+    loadn r2, #89
+    cmp r1, r2
+    jgr MoveCursor_Fim          ; pos > 89 -> ja esta na ultima linha, nao move
+
     loadn r2, #10
     add r2, r1, r2              ; r2 = nova posicao (pos + 10)
-    loadn r3, #99
-    cmp r2, r3
-    jgr MoveCursor_Fim          ; nova pos > 99 → ja esta na ultima linha, nao move
-
     store PosAntCursor, r1
     store PosCursor, r2         ; desce uma linha
     jmp MoveCursor_Fim
 
     ; ------------------------------------------------------------------
     ; A — mover para ESQUERDA (subtrai 1)
-    ; Protecao de borda: nao pode sair da coluna 0 (pos MOD 10 == 0)
+    ; Permite voltar para a linha de cima, travando apenas na posicao 0
     ; ------------------------------------------------------------------
 MoveCursor_A:
     loadn r2, #'a'
     cmp r0, r2
     jne MoveCursor_D            ; nao e 'a', testa proximo
 
-    ; calcula a coluna atual = PosCursor MOD 10
-    load r3, PosCursor
-MoveCursor_A_Mod:
-    loadn r2, #9
-    cmp r3, r2
-    jle MoveCursor_A_ModFim     ; r3 <= 9 → r3 ja e a coluna
-    loadn r2, #10
-    sub r3, r3, r2              ; r3 -= 10
-    jmp MoveCursor_A_Mod
-MoveCursor_A_ModFim:
     loadn r2, #0
-    cmp r3, r2
-    jeq MoveCursor_Fim          ; coluna == 0 → borda esquerda, nao move
+    cmp r1, r2
+    jeq MoveCursor_Fim          ; pos == 0 -> inicio do tabuleiro, nao move
 
     store PosAntCursor, r1
     dec r1                      ; anda um passo a esquerda: pos = pos - 1
@@ -101,26 +136,16 @@ MoveCursor_A_ModFim:
 
     ; ------------------------------------------------------------------
     ; D — mover para DIREITA (soma 1)
-    ; Protecao de borda: nao pode sair da coluna 9 (pos MOD 10 == 9)
+    ; Permite descer para a linha de baixo, travando apenas na posicao 99
     ; ------------------------------------------------------------------
 MoveCursor_D:
     loadn r2, #'d'
     cmp r0, r2
     jne MoveCursor_Fim          ; nao e 'd', nenhuma tecla valida
 
-    ; calcula a coluna atual = PosCursor MOD 10
-    load r3, PosCursor
-MoveCursor_D_Mod:
-    loadn r2, #9
-    cmp r3, r2
-    jle MoveCursor_D_ModFim     ; r3 <= 9 → r3 ja e a coluna
-    loadn r2, #10
-    sub r3, r3, r2              ; r3 -= 10
-    jmp MoveCursor_D_Mod
-MoveCursor_D_ModFim:
-    loadn r2, #9
-    cmp r3, r2
-    jeq MoveCursor_Fim          ; coluna == 9 → borda direita, nao move
+    loadn r2, #99
+    cmp r1, r2
+    jeq MoveCursor_Fim          ; pos == 99 -> fim do tabuleiro, nao move
 
     store PosAntCursor, r1
     inc r1                      ; anda um passo a direita: pos = pos + 1
