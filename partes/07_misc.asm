@@ -3,10 +3,26 @@
 ; Sugestao de responsavel: Lucca
 ; ===================================================================
 Delay:
+    push r0
+    push r1
+    push r2
+    loadn r0,#100
+    loadn r1,#30
+    loadn r2,#1
+    LoopDelay:
+        sub r0,r0,r2 ;Subtrai 1 do primeiro registrador ( flag de zero gerada automaticamnete )
+        jnz LoopDelay ;Enquanto não for zero repete o processo
+        loadn r0,#100
+        sub r1,r1,r2 ;Quando r0 zerar tira um do r1 e restaura o r0 e volta pro loop
+        jnz LoopDelay ;O loop so acaba qunado r0 e r1 forem 0
+    pop r2
+    pop r1
+    pop r0
+    rts
     ; O QUE FAZER:
     ; Copiar a logica de delay do codigo 'nave.asm'.
     ; E apenas um loop aninhado contando ate zero pra segurar o processador.
-    rts
+
 
 ; ===================================================================
 ; TelaFinal: Mostra o resultado e trava o jogo
