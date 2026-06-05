@@ -7,7 +7,7 @@ Delay:
     push r1
     push r2
     loadn r0,#100
-    loadn r1,#30
+    loadn r1,#5
     loadn r2,#1
     LoopDelay:
         sub r0,r0,r2 ;Subtrai 1 do primeiro registrador ( flag de zero gerada automaticamnete )
