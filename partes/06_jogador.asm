@@ -96,6 +96,7 @@ LoopAcaoJogador:
                 LigaBit1AdjacenteDiagonalBaixoEsquerda:
                 LigaBit1AdjacenteDiagonalBaixoDireita:
             
+            
         
 
     ; O QUE FAZER:
