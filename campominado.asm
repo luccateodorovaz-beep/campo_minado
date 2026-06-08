@@ -759,7 +759,7 @@ LoopAcaoJogador:
         loadi r4,r1 ;Carrega valor do endereço r1 em r4
         ChecaBit0:;Vai dizer se tem bomba ou não 
             loadn r2,#1 ;Para comprar o ultimo bit apenas
-            and r3,r2,r3 ;Faz o and de um como o valor atualizado ( podia ser o valor não atualizado ) e guarda em r3
+            and r3,r4,r2 ;Faz o and entre r4 (valor) e r2 (máscara) e guarda em r3
             jnz SetGameOverLose ;Se não for zero tem bomba logo acabou o jogo
             
             ;Se ficou é porque o jogo continua, agora tenho que ver se ele abriu a útlima casa vazia do mapa 
@@ -767,7 +767,7 @@ LoopAcaoJogador:
             load r1, CasasSeguras 
             loadn r2,#0
             cmp r1,r2 ;Ve se o numero de casas seguras chegou a zero 
-            jne LigaBit1;nao chegou, continua com o loop de ação jogador
+            jne FinalAcaoJogador ;Mudar depois
             ;Se chegou ( não deu jump ) jogador venceu 
             loadn r2, #2
             store GameOver,r2
@@ -786,23 +786,24 @@ LoopAcaoJogador:
             loadi r4, r2 ;r4 é o valor da casa atual 
             ;Agora ligamos o bit da casa atual 
             loadn r5,#2 ; r5 é o valor para ligar o bit1 ( 2 )
-            or r6,r4,r2 ;r6 é o valor atualizado 
-            store r2,r4 ;Guarda valor de r4 valor atualizado no endero da poisção atual r2
+            or r6,r4,r5 ;r6 é o valor atualizado 
+            storei r2,r6 ;Guarda valor atualizado (r6) no endereço apontado por r2
             ;E agora Decrementamos casas seguras 
             load r2, CasasSeguras
             dec r2
             store CasasSeguras, r2 ;Decrementa casas seguras 
-            LigaBit1AdjacenteBaixo:
+            jmp FinalAcaoJogador
+            ;LigaBit1AdjacenteBaixo:
             ;Ve se tem bomba Primeiro ( se tiver vai para o debaixo )
             ;Depois ve se ta na borda no mapa
             ;Liga o Bit 
             ;Decrementa Casas segura e manda de volta para o Loop de Baixo 
-                LigaBit1AdjacenteEsquerda:
-                LigaBit1AdjacenteDireita:
-                LigaBit1AdjacenteDiagonalCimaEsquerda:
-                LigaBit1AdjacenteDiagonalCimaDireita:  
-                LigaBit1AdjacenteDiagonalBaixoEsquerda:
-                LigaBit1AdjacenteDiagonalBaixoDireita:
+                ;LigaBit1AdjacenteEsquerda:
+                ;LigaBit1AdjacenteDireita:
+                ;LigaBit1AdjacenteDiagonalCimaEsquerda:
+               ;LigaBit1AdjacenteDiagonalCimaDireita:  
+                ;LigaBit1AdjacenteDiagonalBaixoEsquerda:
+                ;LigaBit1AdjacenteDiagonalBaixoDireita:
             
             
         
