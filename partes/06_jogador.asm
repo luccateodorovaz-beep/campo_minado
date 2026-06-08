@@ -49,14 +49,7 @@ LoopAcaoJogador:
         loadn r1,#Tabuleiro
         add r1,r1,r0 ;Ve posição atual do vetor que jogador se encontra 
         loadi r4,r1 ;Carrega valor do endereço r1 em r4
-        LigaBit1:
-            loadn r2,#2 
-            or r3,r4,r2 ;Faz o or entre 2 (10) e o numero atual para ligar o bit( para ligar o bit 1 / se for 0 vira 1 e se for 1 continua 1)
-            storei r1,r3;Carrega o valor de r3 no endereço de r1 ( atualizou mas com o bit0 ligado)
-            LigaBit1Adjacente:
-            ;; Falta fazer parte que abre casas adjacentes sem bomba e decrementa Casas Seguras quaando isso ocorre 
-
-        ChecaBit0:
+        ChecaBit0:;Vai dizer se tem bomba ou não 
             loadn r2,#1 ;Para comprar o ultimo bit apenas
             and r3,r2,r3 ;Faz o and de um como o valor atualizado ( podia ser o valor não atualizado ) e guarda em r3
             jnz SetGameOverLose ;Se não for zero tem bomba logo acabou o jogo
@@ -66,7 +59,7 @@ LoopAcaoJogador:
             load r1, CasasSeguras 
             loadn r2,#0
             cmp r1,r2 ;Ve se o numero de casas seguras chegou a zero 
-            jne FinalAcaoJogador ;Se nao chegou, continua com o loop de main ( sai de acao jogador )
+            jne LigaBit1;nao chegou, continua com o loop de ação jogador
             ;Se chegou ( não deu jump ) jogador venceu 
             loadn r2, #2
             store GameOver,r2
@@ -77,6 +70,32 @@ LoopAcaoJogador:
             store GameOver, r2
             jmp  FinalAcaoJogador
     
+        LigaBit1: ;Ligar o bit 1 quer dizer revelar a casa escondida
+            ;Antes incicializamos tudo que vamos usar em registradores difrentes ( ja que o processo será repetido várias vezes )
+            load r0, PosCursor ;r0 é posição do cursor ( 0 a 99 )
+            loadn r1, #Tabuleiro; r1 é o endereço do tabuleiro ( do inicio do vetor tabuleiro)
+            add r2, r1, r0; r2 é o enderço da posição atual 
+            loadi r4, r2 ;r4 é o valor da casa atual 
+            ;Agora ligamos o bit da casa atual 
+            loadn r5,#2 ; r5 é o valor para ligar o bit1 ( 2 )
+            or r6,r4,r2 ;r6 é o valor atualizado 
+            store r2,r4 ;Guarda valor de r4 valor atualizado no endero da poisção atual r2
+            ;E agora Decrementamos casas seguras 
+            load r2, CasasSeguras
+            dec r2
+            store CasasSeguras, r2 ;Decrementa casas seguras 
+            LigaBit1AdjacenteBaixo:
+            ;Ve se tem bomba Primeiro ( se tiver vai para o debaixo )
+            ;Depois ve se ta na borda no mapa
+            ;Liga o Bit 
+            ;Decrementa Casas segura e manda de volta para o Loop de Baixo 
+                LigaBit1AdjacenteEsquerda:
+                LigaBit1AdjacenteDireita:
+                LigaBit1AdjacenteDiagonalCimaEsquerda:
+                LigaBit1AdjacenteDiagonalCimaDireita:  
+                LigaBit1AdjacenteDiagonalBaixoEsquerda:
+                LigaBit1AdjacenteDiagonalBaixoDireita:
+            
         
 
     ; O QUE FAZER:

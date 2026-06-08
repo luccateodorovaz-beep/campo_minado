@@ -757,13 +757,11 @@ LoopAcaoJogador:
         loadn r1,#Tabuleiro
         add r1,r1,r0 ;Ve posição atual do vetor que jogador se encontra 
         loadi r4,r1 ;Carrega valor do endereço r1 em r4
-        LigaBit1:
+        LigaBit1: ;Ligar o bit 1 quer dizer revelar a casa escondida
             loadn r2,#2 
             or r3,r4,r2 ;Faz o or entre 2 (10) e o numero atual para ligar o bit( para ligar o bit 1 / se for 0 vira 1 e se for 1 continua 1)
             storei r1,r3;Carrega o valor de r3 no endereço de r1 ( atualizou mas com o bit0 ligado)
-            LigaBit1Adjacente:
             ;; Falta fazer parte que abre casas adjacentes sem bomba e decrementa Casas Seguras quaando isso ocorre 
-
         ChecaBit0:
             loadn r2,#1 ;Para comprar o ultimo bit apenas
             and r3,r2,r3 ;Faz o and de um como o valor atualizado ( podia ser o valor não atualizado ) e guarda em r3
