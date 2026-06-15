@@ -24,6 +24,7 @@ IniciaVariaveis:
 
     loadn r1, #100
     loadn r2, #Tabuleiro
+    loadn r0, #0
 
 IniciaVariaveis_Loop:
     dec r1

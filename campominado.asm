@@ -137,6 +137,7 @@ IniciaVariaveis:
 
     loadn r1, #100
     loadn r2, #Tabuleiro
+    loadn r0, #0
 
 IniciaVariaveis_Loop:
     dec r1
@@ -446,6 +447,7 @@ ImprimeTabuleiro:
     push r4     ; value from memory
     push r5     ; temp / char to print
     push r6     ; screen offset helper
+    push r7
     
     loadn r0, #0
     loadn r3, #90       ; Start pos (x=10, y=2) -> offset = 2*40 + 10 = 90
@@ -466,12 +468,297 @@ ImprimeTabuleiro_LoopX:
     add r5, r5, r0
     loadi r4, r5        ; r4 recebe o valor que esta no Tabuleiro
     
-    loadn r5, #4        ; mask bit 2 (bandeira)
-    and r4, r4, r5      ; isola o bit 2 em r4
+    ; check Revealed (bit 1)
+    loadn r5, #2
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jne ImprimeTabuleiro_Revelado
+
+ImprimeTabuleiro_NaoRevelado:
+    ; check Bandeira (bit 2)
+    loadn r5, #4
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jeq ImprimeTabuleiro_Vazio
+    jmp ImprimeTabuleiro_Flag
+
+ImprimeTabuleiro_Revelado:
+    ; check Bomb (bit 0)
+    loadn r5, #1
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jne ImprimeTabuleiro_Bomba
+
+    ; mask hint (bits 3 to 6)
+    loadn r5, #120      ; 1111000 in binary
+    and r7, r4, r5
     
     loadn r5, #0
-    cmp r4, r5
-    jeq ImprimeTabuleiro_Vazio
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Zero
+    
+    loadn r5, #8
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Um
+    
+    loadn r5, #16
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Dois
+    
+    loadn r5, #24
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Tres
+    
+    loadn r5, #32
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Quatro
+    
+    loadn r5, #40
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Cinco
+    
+    loadn r5, #48
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Seis
+    
+    loadn r5, #56
+    cmp r7, r5
+    jeq ImprimeTabuleiro_Sete
+    
+    jmp ImprimeTabuleiro_Oito
+
+ImprimeTabuleiro_Bomba:
+    loadn r5, #103
+    outchar r5, r3
+    
+    loadn r5, #102
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #100
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #101
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Zero:
+    loadn r5, #3
+    outchar r5, r3
+    
+    loadn r5, #3
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #3
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #3
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Um:
+    loadn r5, #20
+    outchar r5, r3
+    
+    loadn r5, #19
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #17
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #18
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Dois:
+    loadn r5, #24
+    outchar r5, r3
+    
+    loadn r5, #23
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #21
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #22
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Tres:
+    loadn r5, #28
+    outchar r5, r3
+    
+    loadn r5, #27
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #25
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #26
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Quatro:
+    loadn r5, #33
+    outchar r5, r3
+    
+    loadn r5, #59
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #29
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #30
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Cinco:
+    loadn r5, #37
+    outchar r5, r3
+    
+    loadn r5, #36
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #34
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #35
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Seis:
+    loadn r5, #41
+    outchar r5, r3
+    
+    loadn r5, #40
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #38
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #39
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Sete:
+    loadn r5, #45
+    outchar r5, r3
+    
+    loadn r5, #44
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #42
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #43
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
+
+ImprimeTabuleiro_Oito:
+    loadn r5, #49
+    outchar r5, r3
+    
+    loadn r5, #48
+    push r3
+    pop r6
+    inc r6
+    outchar r5, r6
+    
+    loadn r5, #46
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    outchar r5, r6
+    
+    loadn r5, #47
+    inc r6
+    outchar r5, r6
+    
+    jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Flag:
     ; top-left: flag4 (char 12)
@@ -489,8 +776,8 @@ ImprimeTabuleiro_Flag:
     loadn r5, #9
     push r3
     pop r6
-    loadn r4, #40
-    add r6, r6, r4
+    loadn r7, #40
+    add r6, r6, r7
     outchar r5, r6
     
     ; bottom-right: flag2 (char 10)
@@ -516,8 +803,8 @@ ImprimeTabuleiro_Vazio:
     loadn r5, #31
     push r3
     pop r6
-    loadn r4, #40
-    add r6, r6, r4
+    loadn r7, #40
+    add r6, r6, r7
     outchar r5, r6
     
     ; bottom-right: grade2 (char 5)
@@ -539,6 +826,7 @@ ImprimeTabuleiro_NextY:
     jmp ImprimeTabuleiro_LoopY
 
 ImprimeTabuleiro_Fim:
+    pop r7
     pop r6
     pop r5
     pop r4
