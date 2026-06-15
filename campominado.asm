@@ -62,7 +62,7 @@ MsgTitulo: string "
                    por: Pedro Covisi, Lucca Vaz e Antônio Carvalho
  ======================================================================================
 "
-MsgComandos: string "Comandos:\nAndar - WASD\nRevelar - ESPACO\nColocar/tirar bandeira - F"
+MsgComandos: string "Comandos:\nAndar WASD\nRevelar ESPACO\nColocar ou tirar bandeira F"
 MsgDerrota: string "B O O M!! Voce pisou em uma mina."
 MsgVitoria: string "PARABENS! Voce venceu!"
 MsgTelaInicial: string "Pressione qualquer tecla para comecar"
@@ -531,23 +531,23 @@ ImprimeTabuleiro_Revelado:
     jmp ImprimeTabuleiro_Oito
 
 ImprimeTabuleiro_Bomba:
-    loadn r5, #103
+    loadn r5, #127
     outchar r5, r3
     
-    loadn r5, #102
+    loadn r5, #126
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #100
+    loadn r5, #124
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #101
+    loadn r5, #125
     inc r6
     outchar r5, r6
     
