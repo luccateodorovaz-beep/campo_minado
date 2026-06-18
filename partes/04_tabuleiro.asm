@@ -530,11 +530,15 @@ ImprimeCasa_Zero:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Um:
+    loadn r4, #1024     ; Cor azul
+    
     loadn r5, #20
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #19
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -542,6 +546,7 @@ ImprimeCasa_Um:
     outchar r5, r6
     
     loadn r5, #17
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -550,6 +555,7 @@ ImprimeCasa_Um:
     outchar r5, r6
     
     loadn r5, #18
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -557,11 +563,15 @@ ImprimeCasa_Um:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Dois:
+    loadn r4, #768
+    
     loadn r5, #24
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #23
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -569,6 +579,7 @@ ImprimeCasa_Dois:
     outchar r5, r6
     
     loadn r5, #21
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -577,6 +588,7 @@ ImprimeCasa_Dois:
     outchar r5, r6
     
     loadn r5, #22
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -584,11 +596,15 @@ ImprimeCasa_Dois:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Tres:
+    loadn r4, #256      ; Cor vermelha
+    
     loadn r5, #28
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #27
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -596,6 +612,7 @@ ImprimeCasa_Tres:
     outchar r5, r6
     
     loadn r5, #25
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -604,6 +621,7 @@ ImprimeCasa_Tres:
     outchar r5, r6
     
     loadn r5, #26
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -611,11 +629,15 @@ ImprimeCasa_Tres:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Quatro:
+    loadn r4, #1536     ; Cor ciano (azul + verde)
+    
     loadn r5, #33
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #59
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -623,6 +645,7 @@ ImprimeCasa_Quatro:
     outchar r5, r6
     
     loadn r5, #29
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -631,6 +654,7 @@ ImprimeCasa_Quatro:
     outchar r5, r6
     
     loadn r5, #30
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -638,11 +662,15 @@ ImprimeCasa_Quatro:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Cinco:
+    loadn r4, #1280     ; Cor magenta (azul + vermelho)
+    
     loadn r5, #37
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #36
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -650,6 +678,7 @@ ImprimeCasa_Cinco:
     outchar r5, r6
     
     loadn r5, #34
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -658,6 +687,7 @@ ImprimeCasa_Cinco:
     outchar r5, r6
     
     loadn r5, #35
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -665,11 +695,15 @@ ImprimeCasa_Cinco:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Seis:
+    loadn r4, #768      ; Cor amarela (verde + vermelho)
+    
     loadn r5, #41
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #40
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -677,6 +711,7 @@ ImprimeCasa_Seis:
     outchar r5, r6
     
     loadn r5, #38
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -685,6 +720,7 @@ ImprimeCasa_Seis:
     outchar r5, r6
     
     loadn r5, #39
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -692,11 +728,15 @@ ImprimeCasa_Seis:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Sete:
+    loadn r4, #1792     ; Branco (todos os bits de cor)
+    
     loadn r5, #45
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #44
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -704,6 +744,7 @@ ImprimeCasa_Sete:
     outchar r5, r6
     
     loadn r5, #42
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -712,6 +753,7 @@ ImprimeCasa_Sete:
     outchar r5, r6
     
     loadn r5, #43
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
@@ -719,11 +761,15 @@ ImprimeCasa_Sete:
     jmp ImprimeCasa_Fim
 
 ImprimeCasa_Oito:
+    loadn r4, #256      ; Vermelho
+    
     loadn r5, #49
+    add r5, r5, r4
     add r5, r5, r2
     outchar r5, r3
     
     loadn r5, #48
+    add r5, r5, r4
     push r3
     pop r6
     inc r6
@@ -731,6 +777,7 @@ ImprimeCasa_Oito:
     outchar r5, r6
     
     loadn r5, #46
+    add r5, r5, r4
     push r3
     pop r6
     loadn r7, #40
@@ -739,6 +786,7 @@ ImprimeCasa_Oito:
     outchar r5, r6
     
     loadn r5, #47
+    add r5, r5, r4
     inc r6
     add r5, r5, r2
     outchar r5, r6
