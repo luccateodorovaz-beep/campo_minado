@@ -601,230 +601,230 @@ ImprimeTabuleiro_Revelado:
     jmp ImprimeTabuleiro_Oito
 
 ImprimeTabuleiro_Bomba:
-    loadn r5, #24703
+    loadn r5, #127
     outchar r5, r3
     
-    loadn r5, #24702
+    loadn r5, #126
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24700
+    loadn r5, #124
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24701
+    loadn r5, #125
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Zero:
-    loadn r5, #24579
+    loadn r5, #3
     outchar r5, r3
     
-    loadn r5, #24579
+    loadn r5, #3
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24579
+    loadn r5, #3
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24579
+    loadn r5, #3
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Um:
-    loadn r5, #24596
+    loadn r5, #20
     outchar r5, r3
     
-    loadn r5, #24595
+    loadn r5, #19
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24593
+    loadn r5, #17
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24594
+    loadn r5, #18
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Dois:
-    loadn r5, #24600
+    loadn r5, #24
     outchar r5, r3
     
-    loadn r5, #24599
+    loadn r5, #23
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24597
+    loadn r5, #21
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24598
+    loadn r5, #22
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Tres:
-    loadn r5, #24604
+    loadn r5, #28
     outchar r5, r3
     
-    loadn r5, #24603
+    loadn r5, #27
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24601
+    loadn r5, #25
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24602
+    loadn r5, #26
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Quatro:
-    loadn r5, #24609
+    loadn r5, #33
     outchar r5, r3
     
-    loadn r5, #24635
+    loadn r5, #59
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24605
+    loadn r5, #29
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24606
+    loadn r5, #30
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Cinco:
-    loadn r5, #24613
+    loadn r5, #37
     outchar r5, r3
     
-    loadn r5, #24612
+    loadn r5, #36
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24610
+    loadn r5, #34
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24611
+    loadn r5, #35
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Seis:
-    loadn r5, #24617
+    loadn r5, #41
     outchar r5, r3
     
-    loadn r5, #24616
+    loadn r5, #40
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24614
+    loadn r5, #38
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24615
+    loadn r5, #39
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Sete:
-    loadn r5, #24621
+    loadn r5, #45
     outchar r5, r3
     
-    loadn r5, #24620
+    loadn r5, #44
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24618
+    loadn r5, #42
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24619
+    loadn r5, #43
     inc r6
     outchar r5, r6
     
     jmp ImprimeTabuleiro_Prox
 
 ImprimeTabuleiro_Oito:
-    loadn r5, #24625
+    loadn r5, #49
     outchar r5, r3
     
-    loadn r5, #24624
+    loadn r5, #48
     push r3
     pop r6
     inc r6
     outchar r5, r6
     
-    loadn r5, #24622
+    loadn r5, #46
     push r3
     pop r6
     loadn r7, #40
     add r6, r6, r7
     outchar r5, r6
     
-    loadn r5, #24623
+    loadn r5, #47
     inc r6
     outchar r5, r6
     

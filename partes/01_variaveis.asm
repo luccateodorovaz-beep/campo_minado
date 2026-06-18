@@ -17,6 +17,7 @@ PosAntCursor: var #1
 GameOver: var #1        ; 0 = jogando, 1 = perdeu, 2 = venceu
 BombasRestantes: var #1 ; Quantidade de bombas no mapa (fixo: 15)
 CasasSeguras: var #1    ; casas sem bomba ainda nao reveladas (inicia em 85 = 100 - 15)
+PrimeiraJogada: var #1  ; Flag para indicar se eh o primeiro clique (1 = sim, 0 = nao)
 
 ; variaveis de input
 Letra: var #1           ; tecla lida do teclado

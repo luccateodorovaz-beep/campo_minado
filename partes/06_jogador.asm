@@ -51,6 +51,18 @@ AcaoF:
 
 ; --- AcaoEspaco: revela a casa atual ---
 AcaoEspaco:
+    load r0, PrimeiraJogada
+    loadn r1, #1
+    cmp r0, r1
+    jne AcaoEspaco_PulaGeraBombas
+
+    ; primeira jogada
+    loadn r1, #0
+    store PrimeiraJogada, r1
+    call GeraBombas
+    call CalculaDicas
+
+AcaoEspaco_PulaGeraBombas:
     load r0, PosCursor
     loadn r1, #Tabuleiro
     add r1, r1, r0

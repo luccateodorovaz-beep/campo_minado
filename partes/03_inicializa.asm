@@ -22,6 +22,9 @@ IniciaVariaveis:
     loadn r3, #60
     store CasasSeguras, r3      ; 100 casas - 40 bombas = 60 casas seguras
 
+    loadn r3, #1
+    store PrimeiraJogada, r3
+
     loadn r1, #100
     loadn r2, #Tabuleiro
     loadn r0, #0

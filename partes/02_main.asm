@@ -7,8 +7,6 @@ main:
     call IniciaVariaveis
     call DesenhaCenario
     call TelaInicial
-    call GeraBombas
-    call CalculaDicas
 
     ; primeira renderizacao
     call ImprimeTabuleiro
