@@ -17,6 +17,7 @@ PosAntCursor: var #1
 GameOver: var #1        ; 0 = jogando, 1 = perdeu, 2 = venceu
 BombasRestantes: var #1 ; Quantidade de bombas no mapa (fixo: 15)
 CasasSeguras: var #1    ; casas sem bomba ainda nao reveladas (inicia em 85 = 100 - 15)
+PrimeiraJogada: var #1  ; Flag para indicar se eh o primeiro clique (1 = sim, 0 = nao)
 
 ; variaveis de input
 Letra: var #1           ; tecla lida do teclado
@@ -147,8 +148,6 @@ main:
     call IniciaVariaveis
     call DesenhaCenario
     call TelaInicial
-    call GeraBombas
-    call CalculaDicas
 
     ; primeira renderizacao
     call ImprimeTabuleiro
@@ -205,6 +204,9 @@ IniciaVariaveis:
     loadn r3, #60
     store CasasSeguras, r3      ; 100 casas - 40 bombas = 60 casas seguras
 
+    loadn r3, #1
+    store PrimeiraJogada, r3
+
     loadn r1, #100
     loadn r2, #Tabuleiro
     loadn r0, #0
@@ -260,22 +262,94 @@ GeraBombasLoop:
     add r5, r2, r1      ; soma o endereço do vetor (r2), com o nosso indice (r1) e guarda em r5
     loadi r5, r5    ; carrega o valor que esta no endereço apontado por r5 no proprio r5
 
+    ; verifica se é a casa inicial (PosCursor) ou vizinhos
+    push r6
+    push r7
+    load r6, PosCursor
+
+    ; Centro
+    cmp r5, r6
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima (-10)
+    loadn r7, #10
+    sub r7, r6, r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima-Esq (-11)
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima-Dir (-9)
+    inc r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo (+10)
+    loadn r7, #10
+    add r7, r6, r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo-Esq (+9)
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo-Dir (+11)
+    inc r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Esq (-1)
+    push r6
+    pop r7
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Dir (+1)
+    push r6
+    pop r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    pop r7
+    pop r6
+    jmp GeraBombas_PulaBomba_Continua
+
+GeraBombas_PulaBomba_Pop:
+    pop r7
+    pop r6
+    jmp GeraBombas_PulaBomba
+
+GeraBombas_PulaBomba_Continua:
+
     ; vai ate a posicao sorteada e liga o bit da bomba
     add r5, r3, r5
     loadi r7, r5     ; r7 = le o que tem la atualmente
     or r7, r7, r4    ; faz or com 1. se estava 0, vira 1.
     storei r5, r7
 
+    dec r0      ; decrementa de bombas restantes
+
+GeraBombas_PulaBomba:
     ; atualiza o indice de rand para nao repetir numero
     inc r1
     loadn r6, #100
     cmp r1, r6      ; compara se chegou no fim da tabela (100)
-    jne GeraBombas_PulaReset
+    jne GeraBombas_CheckFim
     loadn r1, #0
 
-GeraBombas_PulaReset:
-    dec r0      ; decrementa de bombas restantes
-    jnz GeraBombasLoop
+GeraBombas_CheckFim:
+    loadn r6, #0
+    cmp r0, r6
+    jne GeraBombasLoop
 
     store IncRand, r1
 
@@ -1117,6 +1191,18 @@ AcaoF:
 
 ; --- AcaoEspaco: revela a casa atual ---
 AcaoEspaco:
+    load r0, PrimeiraJogada
+    loadn r1, #1
+    cmp r0, r1
+    jne AcaoEspaco_PulaGeraBombas
+
+    ; primeira jogada
+    loadn r1, #0
+    store PrimeiraJogada, r1
+    call GeraBombas
+    call CalculaDicas
+
+AcaoEspaco_PulaGeraBombas:
     load r0, PosCursor
     loadn r1, #Tabuleiro
     add r1, r1, r0

@@ -24,12 +24,73 @@ GeraBombasLoop:
     add r5, r2, r1      ; soma o endereço do vetor (r2), com o nosso indice (r1) e guarda em r5
     loadi r5, r5    ; carrega o valor que esta no endereço apontado por r5 no proprio r5
 
-    ; verifica se é a casa inicial (PosCursor)
+    ; verifica se é a casa inicial (PosCursor) ou vizinhos
     push r6
+    push r7
     load r6, PosCursor
+
+    ; Centro
     cmp r5, r6
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima (-10)
+    loadn r7, #10
+    sub r7, r6, r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima-Esq (-11)
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Cima-Dir (-9)
+    inc r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo (+10)
+    loadn r7, #10
+    add r7, r6, r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo-Esq (+9)
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Baixo-Dir (+11)
+    inc r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Esq (-1)
+    push r6
+    pop r7
+    dec r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    ; Dir (+1)
+    push r6
+    pop r7
+    inc r7
+    cmp r5, r7
+    jeq GeraBombas_PulaBomba_Pop
+
+    pop r7
     pop r6
-    jeq GeraBombas_PulaBomba
+    jmp GeraBombas_PulaBomba_Continua
+
+GeraBombas_PulaBomba_Pop:
+    pop r7
+    pop r6
+    jmp GeraBombas_PulaBomba
+
+GeraBombas_PulaBomba_Continua:
 
     ; vai ate a posicao sorteada e liga o bit da bomba
     add r5, r3, r5
