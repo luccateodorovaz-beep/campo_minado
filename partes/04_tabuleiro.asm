@@ -32,8 +32,8 @@ GeraBombasLoop:
 
     ; atualiza o indice de rand para nao repetir numero
     inc r1
-    loadn r6, #30
-    cmp r1, r6      ; compara se chegou no fim da tabela (30)
+    loadn r6, #100
+    cmp r1, r6      ; compara se chegou no fim da tabela (100)
     jne GeraBombas_PulaReset
     loadn r1, #0
 

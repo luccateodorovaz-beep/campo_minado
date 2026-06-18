@@ -23,37 +23,107 @@ Letra: var #1           ; tecla lida do teclado
 
 ; números "aleatórios" (baseado no nave.asm) para espalhar bombas
 IncRand: var #1
-Rand: var #30
-    static Rand + #0, #15
-    static Rand + #1, #32
-    static Rand + #2, #77
-    static Rand + #3, #12
-    static Rand + #4, #61
-    static Rand + #5, #8
-    static Rand + #6, #94
-    static Rand + #7, #23
-    static Rand + #8, #56
-    static Rand + #9, #89
-    static Rand + #10, #3
-    static Rand + #11, #42
-    static Rand + #12, #70
-    static Rand + #13, #19
-    static Rand + #14, #81
-    static Rand + #15, #48
-    static Rand + #16, #99
-    static Rand + #17, #27
-    static Rand + #18, #53
-    static Rand + #19, #6
-    static Rand + #20, #38
-    static Rand + #21, #64
-    static Rand + #22, #91
-    static Rand + #23, #11
-    static Rand + #24, #75
-    static Rand + #25, #84
-    static Rand + #26, #2
-    static Rand + #27, #35
-    static Rand + #28, #59
-    static Rand + #29, #22
+Rand: var #100
+static Rand + #0, #66
+    static Rand + #1, #74
+    static Rand + #2, #30
+    static Rand + #3, #79
+    static Rand + #4, #16
+    static Rand + #5, #60
+    static Rand + #6, #15
+    static Rand + #7, #3
+    static Rand + #8, #44
+    static Rand + #9, #58
+    static Rand + #10, #41
+    static Rand + #11, #1
+    static Rand + #12, #21
+    static Rand + #13, #9
+    static Rand + #14, #86
+    static Rand + #15, #91
+    static Rand + #16, #70
+    static Rand + #17, #48
+    static Rand + #18, #55
+    static Rand + #19, #38
+    static Rand + #20, #52
+    static Rand + #21, #42
+    static Rand + #22, #53
+    static Rand + #23, #97
+    static Rand + #24, #61
+    static Rand + #25, #96
+    static Rand + #26, #46
+    static Rand + #27, #0
+    static Rand + #28, #18
+    static Rand + #29, #94
+    static Rand + #30, #2
+    static Rand + #31, #27
+    static Rand + #32, #63
+    static Rand + #33, #26
+    static Rand + #34, #69
+    static Rand + #35, #11
+    static Rand + #36, #17
+    static Rand + #37, #67
+    static Rand + #38, #76
+    static Rand + #39, #14
+    static Rand + #40, #75
+    static Rand + #41, #89
+    static Rand + #42, #93
+    static Rand + #43, #72
+    static Rand + #44, #37
+    static Rand + #45, #40
+    static Rand + #46, #99
+    static Rand + #47, #54
+    static Rand + #48, #10
+    static Rand + #49, #65
+    static Rand + #50, #87
+    static Rand + #51, #78
+    static Rand + #52, #45
+    static Rand + #53, #82
+    static Rand + #54, #28
+    static Rand + #55, #4
+    static Rand + #56, #36
+    static Rand + #57, #22
+    static Rand + #58, #62
+    static Rand + #59, #56
+    static Rand + #60, #50
+    static Rand + #61, #32
+    static Rand + #62, #57
+    static Rand + #63, #85
+    static Rand + #64, #92
+    static Rand + #65, #77
+    static Rand + #66, #84
+    static Rand + #67, #31
+    static Rand + #68, #13
+    static Rand + #69, #39
+    static Rand + #70, #90
+    static Rand + #71, #23
+    static Rand + #72, #47
+    static Rand + #73, #83
+    static Rand + #74, #51
+    static Rand + #75, #20
+    static Rand + #76, #95
+    static Rand + #77, #7
+    static Rand + #78, #81
+    static Rand + #79, #88
+    static Rand + #80, #5
+    static Rand + #81, #8
+    static Rand + #82, #6
+    static Rand + #83, #80
+    static Rand + #84, #49
+    static Rand + #85, #98
+    static Rand + #86, #25
+    static Rand + #87, #68
+    static Rand + #88, #71
+    static Rand + #89, #43
+    static Rand + #90, #59
+    static Rand + #91, #35
+    static Rand + #92, #12
+    static Rand + #93, #73
+    static Rand + #94, #19
+    static Rand + #95, #64
+    static Rand + #96, #29
+    static Rand + #97, #24
+    static Rand + #98, #33
+    static Rand + #99, #34
 
 ; mensagens da interface
 MsgTitulo: string "
@@ -129,11 +199,11 @@ IniciaVariaveis:
     store PosCursor, r3
     store PosAntCursor, r3
 
-    loadn r3, #15
+    loadn r3, #40
     store BombasRestantes, r3
 
-    loadn r3, #85
-    store CasasSeguras, r3      ; 100 casas - 15 bombas = 85 casas seguras
+    loadn r3, #60
+    store CasasSeguras, r3      ; 100 casas - 40 bombas = 60 casas seguras
 
     loadn r1, #100
     loadn r2, #Tabuleiro
@@ -198,8 +268,8 @@ GeraBombasLoop:
 
     ; atualiza o indice de rand para nao repetir numero
     inc r1
-    loadn r6, #30
-    cmp r1, r6      ; compara se chegou no fim da tabela (30)
+    loadn r6, #100
+    cmp r1, r6      ; compara se chegou no fim da tabela (100)
     jne GeraBombas_PulaReset
     loadn r1, #0
 
