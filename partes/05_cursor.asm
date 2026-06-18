@@ -25,29 +25,13 @@ DesenhaCursor_DivEnd:
     add r0, r0, r0      ; r0 = r0 * 2 (cada X lógico ocupa 2 posições físicas na tela)
     add r6, r6, r0      ; r6 agora tem o offset exato na tela
     
-    ; top-left: cursor4 (char 16)
-    loadn r1, #16
-    outchar r1, r6
-    
-    ; top-right: cursor3 (char 15)
-    loadn r1, #15
+    load r0, PosCursor  ; Restaura r0 para o indice logico
+    loadn r2, #512      ; Cor verde (bit 9 = 1 -> +512)
+    push r3
     push r6
-    pop r2
-    inc r2
-    outchar r1, r2
-    
-    ; bottom-left: cursor1 (char 13)
-    loadn r1, #13
-    push r6
-    pop r2
-    loadn r0, #40
-    add r2, r2, r0
-    outchar r1, r2
-    
-    ; bottom-right: cursor2 (char 14)
-    loadn r1, #14
-    inc r2
-    outchar r1, r2
+    pop r3              ; ImprimeCasa usa r3 para offset na tela
+    call ImprimeCasa
+    pop r3
 
     pop r6
     pop r2

@@ -369,354 +369,10 @@ ImprimeTabuleiro_LoopX:
     cmp r2, r5
     jeq ImprimeTabuleiro_NextY
     
-    ; --- Draw logic ---
-    loadn r5, #Tabuleiro
-    add r5, r5, r0
-    loadi r4, r5        ; r4 recebe o valor que esta no Tabuleiro
-    
-    ; check Revealed (bit 1)
-    loadn r5, #2
-    and r5, r4, r5
-    loadn r7, #0
-    cmp r5, r7
-    jne ImprimeTabuleiro_Revelado
-
-ImprimeTabuleiro_NaoRevelado:
-    ; check Bandeira (bit 2)
-    loadn r5, #4
-    and r5, r4, r5
-    loadn r7, #0
-    cmp r5, r7
-    jeq ImprimeTabuleiro_Vazio
-    jmp ImprimeTabuleiro_Flag
-
-ImprimeTabuleiro_Revelado:
-    ; check Bomb (bit 0)
-    loadn r5, #1
-    and r5, r4, r5
-    loadn r7, #0
-    cmp r5, r7
-    jne ImprimeTabuleiro_Bomba
-
-    ; mask hint (bits 3 to 6)
-    loadn r5, #120      ; 1111000 in binary
-    and r7, r4, r5
-    
-    loadn r5, #0
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Zero
-    
-    loadn r5, #8
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Um
-    
-    loadn r5, #16
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Dois
-    
-    loadn r5, #24
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Tres
-    
-    loadn r5, #32
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Quatro
-    
-    loadn r5, #40
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Cinco
-    
-    loadn r5, #48
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Seis
-    
-    loadn r5, #56
-    cmp r7, r5
-    jeq ImprimeTabuleiro_Sete
-    
-    jmp ImprimeTabuleiro_Oito
-
-ImprimeTabuleiro_Bomba:
-    loadn r5, #127
-    outchar r5, r3
-    
-    loadn r5, #126
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #124
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #125
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Zero:
-    loadn r5, #3
-    outchar r5, r3
-    
-    loadn r5, #3
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #3
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #3
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Um:
-    loadn r5, #20
-    outchar r5, r3
-    
-    loadn r5, #19
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #17
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #18
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Dois:
-    loadn r5, #24
-    outchar r5, r3
-    
-    loadn r5, #23
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #21
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #22
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Tres:
-    loadn r5, #28
-    outchar r5, r3
-    
-    loadn r5, #27
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #25
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #26
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Quatro:
-    loadn r5, #33
-    outchar r5, r3
-    
-    loadn r5, #59
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #29
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #30
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Cinco:
-    loadn r5, #37
-    outchar r5, r3
-    
-    loadn r5, #36
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #34
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #35
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Seis:
-    loadn r5, #41
-    outchar r5, r3
-    
-    loadn r5, #40
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #38
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #39
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Sete:
-    loadn r5, #45
-    outchar r5, r3
-    
-    loadn r5, #44
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #42
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #43
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Oito:
-    loadn r5, #49
-    outchar r5, r3
-    
-    loadn r5, #48
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    loadn r5, #46
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    loadn r5, #47
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Flag:
-    ; top-left: flag4 (char 12)
-    loadn r5, #12
-    outchar r5, r3
-    
-    ; top-right: flag3 (char 11)
-    loadn r5, #11
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    ; bottom-left: flag1 (char 9)
-    loadn r5, #9
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    ; bottom-right: flag2 (char 10)
-    loadn r5, #10
-    inc r6
-    outchar r5, r6
-    
-    jmp ImprimeTabuleiro_Prox
-
-ImprimeTabuleiro_Vazio:
-    ; top-left: grade4 (char 7)
-    loadn r5, #7
-    outchar r5, r3
-    
-    ; top-right: grade3 (char 6)
-    loadn r5, #6
-    push r3
-    pop r6
-    inc r6
-    outchar r5, r6
-    
-    ; bottom-left: grade1 (char 31)
-    loadn r5, #31
-    push r3
-    pop r6
-    loadn r7, #40
-    add r6, r6, r7
-    outchar r5, r6
-    
-    ; bottom-right: grade2 (char 5)
-    loadn r5, #5
-    inc r6
-    outchar r5, r6
+    push r2
+    loadn r2, #0
+    call ImprimeCasa
+    pop r2
 
 ImprimeTabuleiro_Prox:
     inc r0
@@ -741,3 +397,418 @@ ImprimeTabuleiro_Fim:
     pop r1
     pop r0
     rts
+; ===================================================================
+; ImprimeCasa: Desenha uma casa especifica na tela
+; r0 = indice da casa (0 a 99)
+; r3 = offset na tela inicial da casa
+; r2 = offset de cor
+; ===================================================================
+ImprimeCasa:
+    push r4
+    push r5
+    push r6
+    push r7
+
+    loadn r5, #Tabuleiro
+    add r5, r5, r0
+    loadi r4, r5        ; r4 recebe o valor que esta no Tabuleiro
+    
+    ; check Revealed (bit 1)
+    loadn r5, #2
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jne ImprimeCasa_Revelado
+
+ImprimeCasa_NaoRevelado:
+    ; check Bandeira (bit 2)
+    loadn r5, #4
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jeq ImprimeCasa_Vazio
+    jmp ImprimeCasa_Flag
+
+ImprimeCasa_Revelado:
+    ; check Bomb (bit 0)
+    loadn r5, #1
+    and r5, r4, r5
+    loadn r7, #0
+    cmp r5, r7
+    jne ImprimeCasa_Bomba
+
+    ; mask hint (bits 3 to 6)
+    loadn r5, #120      ; 1111000 in binary
+    and r7, r4, r5
+    
+    loadn r5, #0
+    cmp r7, r5
+    jeq ImprimeCasa_Zero
+    
+    loadn r5, #8
+    cmp r7, r5
+    jeq ImprimeCasa_Um
+    
+    loadn r5, #16
+    cmp r7, r5
+    jeq ImprimeCasa_Dois
+    
+    loadn r5, #24
+    cmp r7, r5
+    jeq ImprimeCasa_Tres
+    
+    loadn r5, #32
+    cmp r7, r5
+    jeq ImprimeCasa_Quatro
+    
+    loadn r5, #40
+    cmp r7, r5
+    jeq ImprimeCasa_Cinco
+    
+    loadn r5, #48
+    cmp r7, r5
+    jeq ImprimeCasa_Seis
+    
+    loadn r5, #56
+    cmp r7, r5
+    jeq ImprimeCasa_Sete
+    
+    jmp ImprimeCasa_Oito
+
+ImprimeCasa_Bomba:
+    loadn r5, #127
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #126
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #124
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #125
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Zero:
+    loadn r5, #3
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #3
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #3
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #3
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Um:
+    loadn r5, #20
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #19
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #17
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #18
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Dois:
+    loadn r5, #24
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #23
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #21
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #22
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Tres:
+    loadn r5, #28
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #27
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #25
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #26
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Quatro:
+    loadn r5, #33
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #59
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #29
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #30
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Cinco:
+    loadn r5, #37
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #36
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #34
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #35
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Seis:
+    loadn r5, #41
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #40
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #38
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #39
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Sete:
+    loadn r5, #45
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #44
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #42
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #43
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Oito:
+    loadn r5, #49
+    add r5, r5, r2
+    outchar r5, r3
+    
+    loadn r5, #48
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #46
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    loadn r5, #47
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Flag:
+    ; top-left: flag4 (char 12)
+    loadn r5, #12
+    add r5, r5, r2
+    outchar r5, r3
+    
+    ; top-right: flag3 (char 11)
+    loadn r5, #11
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    ; bottom-left: flag1 (char 9)
+    loadn r5, #9
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    ; bottom-right: flag2 (char 10)
+    loadn r5, #10
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    jmp ImprimeCasa_Fim
+
+ImprimeCasa_Vazio:
+    ; top-left: grade4 (char 7)
+    loadn r5, #7
+    add r5, r5, r2
+    outchar r5, r3
+    
+    ; top-right: grade3 (char 6)
+    loadn r5, #6
+    push r3
+    pop r6
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+    
+    ; bottom-left: grade1 (char 31)
+    loadn r5, #31
+    push r3
+    pop r6
+    loadn r7, #40
+    add r6, r6, r7
+    add r5, r5, r2
+    outchar r5, r6
+    
+    ; bottom-right: grade2 (char 5)
+    loadn r5, #5
+    inc r6
+    add r5, r5, r2
+    outchar r5, r6
+
+ImprimeCasa_Fim:
+    pop r7
+    pop r6
+    pop r5
+    pop r4
+    rts
+
