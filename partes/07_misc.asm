@@ -29,11 +29,57 @@ Delay:
 ; Sugestao de responsavel: Covisi
 ; ===================================================================
 TelaFinal:
-    ; O QUE FAZER:
-    ; 1. Ler 'GameOver'.
-    ; 2. Se for 1, usar ImprimeStr pra mostrar 'MsgDerrota'.
-    ; 3. Se for 2, usar ImprimeStr pra mostrar 'MsgVitoria'.
-    ; (Opcional: Perguntar se quer jogar de novo).
+    ; Verifica se ganhou ou perdeu
+    load r0, GameOver
+    loadn r1, #1
+    cmp r0, r1
+    jeq TelaFinal_Derrota
+    
+    loadn r1, #2
+    cmp r0, r1
+    jeq TelaFinal_Vitoria
+    
+    rts
+
+TelaFinal_Derrota:
+    call printcenarioDerrotaScreen    ; Limpa a tela mostrando a tela de derrota
+    
+    loadn r0, #MsgDerrota
+    loadn r1, #1000      ; Linha 25
+    call ImprimeStr
+    
+    jmp TelaFinal_EsperaTecla
+
+TelaFinal_Vitoria:
+    call printcenario1Screen
+    
+    loadn r0, #MsgVitoria
+    loadn r1, #1000
+    call ImprimeStr
+
+TelaFinal_EsperaTecla:
+    loadn r0, #MsgTelaInicial
+    loadn r1, #1120             ; Linha 28
+    call ImprimeStr
+    
+    push r0
+    push r1
+    
+    ; Espera soltar todas as teclas primeiro para nao pegar sujeira do jogo
+    loadn r1, #255
+TelaFinal_LimpaBuffer:
+    inchar r0
+    cmp r0, r1
+    jne TelaFinal_LimpaBuffer
+
+TelaFinal_Loop:
+    inchar r0
+    cmp r0, r1
+    jeq TelaFinal_Loop          ; Espera apertar algo
+    
+    pop r1
+    pop r0
+    
     rts
 
 ; ===================================================================

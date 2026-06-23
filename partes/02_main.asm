@@ -28,6 +28,22 @@ LoopPrincipal:
     call MoveCursor
     call AcaoJogador
 
+    ; --- Checagem de vitória ---
+    load r0, GameOver
+    loadn r1, #0
+    cmp r0, r1
+    jne LoopPrincipal       ; se já tiver GameOver, pula pro check do loop
+
+    load r0, CasasSeguras
+    loadn r1, #0
+    cmp r0, r1
+    jne PulaVitoria         ; se CasasSeguras != 0, continua
+
+    loadn r0, #2
+    store GameOver, r0      ; GameOver = 2 (vitória)
+
+PulaVitoria:
+
     call ImprimeTabuleiro
     call DesenhaCursor
     
@@ -38,4 +54,4 @@ LoopPrincipal_PulaRender:
 
 FimDeJogo:
     call TelaFinal
-    halt
+    jmp main

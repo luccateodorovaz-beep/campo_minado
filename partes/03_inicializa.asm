@@ -16,11 +16,11 @@ IniciaVariaveis:
     store PosCursor, r3
     store PosAntCursor, r3
 
-    loadn r3, #40
+    loadn r3, #25
     store BombasRestantes, r3
 
-    loadn r3, #60
-    store CasasSeguras, r3      ; 100 casas - 40 bombas = 60 casas seguras
+    loadn r3, #75
+    store CasasSeguras, r3      ; 100 casas - 25 bombas = 75 casas seguras
 
     loadn r3, #1
     store PrimeiraJogada, r3

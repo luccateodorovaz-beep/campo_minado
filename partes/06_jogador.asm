@@ -299,14 +299,15 @@ FimTentaAbrir:
 SetGameOverLose:
     loadn r2, #1
     store GameOver, r2
-    jmp FinalAcaoJogador
+    jmp FinalAcaoJogador_Pop
 
 SetGameOverWin:
     loadn r2, #2
     store GameOver, r2
-    jmp FinalAcaoJogador
+    jmp FinalAcaoJogador_Pop
 
 FinalAcaoJogador:
+FinalAcaoJogador_Pop:
     ; Restaura todos os registradores salvos no topo de AcaoJogador
     pop r7
     pop r6

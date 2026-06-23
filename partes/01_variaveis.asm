@@ -134,8 +134,8 @@ MsgTitulo: string "
  ======================================================================================
 "
 MsgComandos: string "Comandos\nAndar WASD\nRevelar ESPACO\nColocar ou tirar bandeira F"
-MsgDerrota: string "B O O M!! Voce pisou em uma mina."
-MsgVitoria: string "PARABENS! Voce venceu!"
+MsgDerrota: string "B O O O M M M    Voce pisou em uma mina"
+MsgVitoria: string "P A R A B E N S     Voce venceu"
 MsgTelaInicial: string "Pressione qualquer tecla para comecar"
 
 

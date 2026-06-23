@@ -134,8 +134,8 @@ MsgTitulo: string "
  ======================================================================================
 "
 MsgComandos: string "Comandos\nAndar WASD\nRevelar ESPACO\nColocar ou tirar bandeira F"
-MsgDerrota: string "B O O M!! Voce pisou em uma mina."
-MsgVitoria: string "PARABENS! Voce venceu!"
+MsgDerrota: string "B O O O M M M    Voce pisou em uma mina"
+MsgVitoria: string "P A R A B E N S     Voce venceu"
 MsgTelaInicial: string "Pressione qualquer tecla para comecar"
 
 
@@ -169,6 +169,22 @@ LoopPrincipal:
     call MoveCursor
     call AcaoJogador
 
+    ; --- Checagem de vitória ---
+    load r0, GameOver
+    loadn r1, #0
+    cmp r0, r1
+    jne LoopPrincipal       ; se já tiver GameOver, pula pro check do loop
+
+    load r0, CasasSeguras
+    loadn r1, #0
+    cmp r0, r1
+    jne PulaVitoria         ; se CasasSeguras != 0, continua
+
+    loadn r0, #2
+    store GameOver, r0      ; GameOver = 2 (vitória)
+
+PulaVitoria:
+
     call ImprimeTabuleiro
     call DesenhaCursor
     
@@ -179,7 +195,7 @@ LoopPrincipal_PulaRender:
 
 FimDeJogo:
     call TelaFinal
-    halt
+    jmp main
 ; ===================================================================
 ; INÍCIO DAS SUBROTINAS
 ; ===================================================================
@@ -198,11 +214,11 @@ IniciaVariaveis:
     store PosCursor, r3
     store PosAntCursor, r3
 
-    loadn r3, #40
+    loadn r3, #25
     store BombasRestantes, r3
 
-    loadn r3, #60
-    store CasasSeguras, r3      ; 100 casas - 40 bombas = 60 casas seguras
+    loadn r3, #75
+    store CasasSeguras, r3      ; 100 casas - 25 bombas = 75 casas seguras
 
     loadn r3, #1
     store PrimeiraJogada, r3
@@ -1542,14 +1558,15 @@ FimTentaAbrir:
 SetGameOverLose:
     loadn r2, #1
     store GameOver, r2
-    jmp FinalAcaoJogador
+    jmp FinalAcaoJogador_Pop
 
 SetGameOverWin:
     loadn r2, #2
     store GameOver, r2
-    jmp FinalAcaoJogador
+    jmp FinalAcaoJogador_Pop
 
 FinalAcaoJogador:
+FinalAcaoJogador_Pop:
     ; Restaura todos os registradores salvos no topo de AcaoJogador
     pop r7
     pop r6
@@ -1591,11 +1608,57 @@ Delay:
 ; Sugestao de responsavel: Covisi
 ; ===================================================================
 TelaFinal:
-    ; O QUE FAZER:
-    ; 1. Ler 'GameOver'.
-    ; 2. Se for 1, usar ImprimeStr pra mostrar 'MsgDerrota'.
-    ; 3. Se for 2, usar ImprimeStr pra mostrar 'MsgVitoria'.
-    ; (Opcional: Perguntar se quer jogar de novo).
+    ; Verifica se ganhou ou perdeu
+    load r0, GameOver
+    loadn r1, #1
+    cmp r0, r1
+    jeq TelaFinal_Derrota
+    
+    loadn r1, #2
+    cmp r0, r1
+    jeq TelaFinal_Vitoria
+    
+    rts
+
+TelaFinal_Derrota:
+    call printcenarioDerrotaScreen    ; Limpa a tela mostrando a tela de derrota
+    
+    loadn r0, #MsgDerrota
+    loadn r1, #1000      ; Linha 25
+    call ImprimeStr
+    
+    jmp TelaFinal_EsperaTecla
+
+TelaFinal_Vitoria:
+    call printcenario1Screen
+    
+    loadn r0, #MsgVitoria
+    loadn r1, #1000
+    call ImprimeStr
+
+TelaFinal_EsperaTecla:
+    loadn r0, #MsgTelaInicial
+    loadn r1, #1120             ; Linha 28
+    call ImprimeStr
+    
+    push r0
+    push r1
+    
+    ; Espera soltar todas as teclas primeiro para nao pegar sujeira do jogo
+    loadn r1, #255
+TelaFinal_LimpaBuffer:
+    inchar r0
+    cmp r0, r1
+    jne TelaFinal_LimpaBuffer
+
+TelaFinal_Loop:
+    inchar r0
+    cmp r0, r1
+    jeq TelaFinal_Loop          ; Espera apertar algo
+    
+    pop r1
+    pop r0
+    
     rts
 
 ; ===================================================================
@@ -4278,6 +4341,1297 @@ printtabuleiro100Screen:
     cmp R1, R2
 
     jne printtabuleiro100ScreenLoop
+
+  pop R3
+  pop R2
+  pop R1
+  pop R0
+  rts
+
+  ; ===========================================================
+; CENARIO DERROTA
+; ===========================================================
+
+cenarioDerrota : var #1200
+  ;Linha 0
+  static cenarioDerrota + #0, #1536
+  static cenarioDerrota + #1, #1536
+  static cenarioDerrota + #2, #1536
+  static cenarioDerrota + #3, #1536
+  static cenarioDerrota + #4, #1536
+  static cenarioDerrota + #5, #1536
+  static cenarioDerrota + #6, #1536
+  static cenarioDerrota + #7, #1536
+  static cenarioDerrota + #8, #1536
+  static cenarioDerrota + #9, #1536
+  static cenarioDerrota + #10, #1536
+  static cenarioDerrota + #11, #1536
+  static cenarioDerrota + #12, #1536
+  static cenarioDerrota + #13, #1536
+  static cenarioDerrota + #14, #1536
+  static cenarioDerrota + #15, #1536
+  static cenarioDerrota + #16, #1536
+  static cenarioDerrota + #17, #1536
+  static cenarioDerrota + #18, #1536
+  static cenarioDerrota + #19, #1536
+  static cenarioDerrota + #20, #1536
+  static cenarioDerrota + #21, #1536
+  static cenarioDerrota + #22, #1536
+  static cenarioDerrota + #23, #1536
+  static cenarioDerrota + #24, #1536
+  static cenarioDerrota + #25, #1536
+  static cenarioDerrota + #26, #1536
+  static cenarioDerrota + #27, #1536
+  static cenarioDerrota + #28, #0
+  static cenarioDerrota + #29, #0
+  static cenarioDerrota + #30, #0
+  static cenarioDerrota + #31, #1536
+  static cenarioDerrota + #32, #1536
+  static cenarioDerrota + #33, #1536
+  static cenarioDerrota + #34, #1536
+  static cenarioDerrota + #35, #1536
+  static cenarioDerrota + #36, #1536
+  static cenarioDerrota + #37, #1536
+  static cenarioDerrota + #38, #1536
+  static cenarioDerrota + #39, #1536
+
+  ;Linha 1
+  static cenarioDerrota + #40, #1536
+  static cenarioDerrota + #41, #1536
+  static cenarioDerrota + #42, #1536
+  static cenarioDerrota + #43, #1536
+  static cenarioDerrota + #44, #0
+  static cenarioDerrota + #45, #0
+  static cenarioDerrota + #46, #0
+  static cenarioDerrota + #47, #1536
+  static cenarioDerrota + #48, #1536
+  static cenarioDerrota + #49, #1536
+  static cenarioDerrota + #50, #1536
+  static cenarioDerrota + #51, #1536
+  static cenarioDerrota + #52, #1536
+  static cenarioDerrota + #53, #1536
+  static cenarioDerrota + #54, #1536
+  static cenarioDerrota + #55, #1536
+  static cenarioDerrota + #56, #1536
+  static cenarioDerrota + #57, #1536
+  static cenarioDerrota + #58, #1536
+  static cenarioDerrota + #59, #1536
+  static cenarioDerrota + #60, #1536
+  static cenarioDerrota + #61, #1536
+  static cenarioDerrota + #62, #1536
+  static cenarioDerrota + #63, #1536
+  static cenarioDerrota + #64, #1536
+  static cenarioDerrota + #65, #1536
+  static cenarioDerrota + #66, #1536
+  static cenarioDerrota + #67, #0
+  static cenarioDerrota + #68, #0
+  static cenarioDerrota + #69, #0
+  static cenarioDerrota + #70, #0
+  static cenarioDerrota + #71, #0
+  static cenarioDerrota + #72, #1536
+  static cenarioDerrota + #73, #1536
+  static cenarioDerrota + #74, #1536
+  static cenarioDerrota + #75, #1536
+  static cenarioDerrota + #76, #1536
+  static cenarioDerrota + #77, #1536
+  static cenarioDerrota + #78, #1536
+  static cenarioDerrota + #79, #1536
+
+  ;Linha 2
+  static cenarioDerrota + #80, #1536
+  static cenarioDerrota + #81, #1536
+  static cenarioDerrota + #82, #0
+  static cenarioDerrota + #83, #0
+  static cenarioDerrota + #84, #0
+  static cenarioDerrota + #85, #0
+  static cenarioDerrota + #86, #0
+  static cenarioDerrota + #87, #0
+  static cenarioDerrota + #88, #0
+  static cenarioDerrota + #89, #0
+  static cenarioDerrota + #90, #1536
+  static cenarioDerrota + #91, #1536
+  static cenarioDerrota + #92, #1536
+  static cenarioDerrota + #93, #1536
+  static cenarioDerrota + #94, #1536
+  static cenarioDerrota + #95, #1536
+  static cenarioDerrota + #96, #1536
+  static cenarioDerrota + #97, #1536
+  static cenarioDerrota + #98, #1536
+  static cenarioDerrota + #99, #1536
+  static cenarioDerrota + #100, #1536
+  static cenarioDerrota + #101, #1536
+  static cenarioDerrota + #102, #1536
+  static cenarioDerrota + #103, #1536
+  static cenarioDerrota + #104, #1536
+  static cenarioDerrota + #105, #1536
+  static cenarioDerrota + #106, #0
+  static cenarioDerrota + #107, #0
+  static cenarioDerrota + #108, #0
+  static cenarioDerrota + #109, #0
+  static cenarioDerrota + #110, #0
+  static cenarioDerrota + #111, #0
+  static cenarioDerrota + #112, #0
+  static cenarioDerrota + #113, #0
+  static cenarioDerrota + #114, #1536
+  static cenarioDerrota + #115, #1536
+  static cenarioDerrota + #116, #1536
+  static cenarioDerrota + #117, #1536
+  static cenarioDerrota + #118, #1536
+  static cenarioDerrota + #119, #1536
+
+  ;Linha 3
+  static cenarioDerrota + #120, #1536
+  static cenarioDerrota + #121, #0
+  static cenarioDerrota + #122, #0
+  static cenarioDerrota + #123, #0
+  static cenarioDerrota + #124, #0
+  static cenarioDerrota + #125, #0
+  static cenarioDerrota + #126, #0
+  static cenarioDerrota + #127, #0
+  static cenarioDerrota + #128, #0
+  static cenarioDerrota + #129, #0
+  static cenarioDerrota + #130, #0
+  static cenarioDerrota + #131, #1536
+  static cenarioDerrota + #132, #1536
+  static cenarioDerrota + #133, #1536
+  static cenarioDerrota + #134, #1536
+  static cenarioDerrota + #135, #1536
+  static cenarioDerrota + #136, #2304
+  static cenarioDerrota + #137, #2304
+  static cenarioDerrota + #138, #2304
+  static cenarioDerrota + #139, #1536
+  static cenarioDerrota + #140, #1536
+  static cenarioDerrota + #141, #1536
+  static cenarioDerrota + #142, #1536
+  static cenarioDerrota + #143, #1536
+  static cenarioDerrota + #144, #1536
+  static cenarioDerrota + #145, #0
+  static cenarioDerrota + #146, #0
+  static cenarioDerrota + #147, #0
+  static cenarioDerrota + #148, #0
+  static cenarioDerrota + #149, #0
+  static cenarioDerrota + #150, #0
+  static cenarioDerrota + #151, #0
+  static cenarioDerrota + #152, #0
+  static cenarioDerrota + #153, #0
+  static cenarioDerrota + #154, #0
+  static cenarioDerrota + #155, #1536
+  static cenarioDerrota + #156, #1536
+  static cenarioDerrota + #157, #1536
+  static cenarioDerrota + #158, #1536
+  static cenarioDerrota + #159, #1536
+
+  ;Linha 4
+  static cenarioDerrota + #160, #1536
+  static cenarioDerrota + #161, #0
+  static cenarioDerrota + #162, #0
+  static cenarioDerrota + #163, #0
+  static cenarioDerrota + #164, #0
+  static cenarioDerrota + #165, #0
+  static cenarioDerrota + #166, #0
+  static cenarioDerrota + #167, #0
+  static cenarioDerrota + #168, #0
+  static cenarioDerrota + #169, #0
+  static cenarioDerrota + #170, #0
+  static cenarioDerrota + #171, #1536
+  static cenarioDerrota + #172, #1536
+  static cenarioDerrota + #173, #1536
+  static cenarioDerrota + #174, #1536
+  static cenarioDerrota + #175, #1536
+  static cenarioDerrota + #176, #2304
+  static cenarioDerrota + #177, #2304
+  static cenarioDerrota + #178, #2304
+  static cenarioDerrota + #179, #2304
+  static cenarioDerrota + #180, #1536
+  static cenarioDerrota + #181, #1536
+  static cenarioDerrota + #182, #1536
+  static cenarioDerrota + #183, #1536
+  static cenarioDerrota + #184, #1536
+  static cenarioDerrota + #185, #0
+  static cenarioDerrota + #186, #0
+  static cenarioDerrota + #187, #0
+  static cenarioDerrota + #188, #0
+  static cenarioDerrota + #189, #0
+  static cenarioDerrota + #190, #0
+  static cenarioDerrota + #191, #0
+  static cenarioDerrota + #192, #0
+  static cenarioDerrota + #193, #0
+  static cenarioDerrota + #194, #1536
+  static cenarioDerrota + #195, #1536
+  static cenarioDerrota + #196, #1536
+  static cenarioDerrota + #197, #1536
+  static cenarioDerrota + #198, #1536
+  static cenarioDerrota + #199, #1536
+
+  ;Linha 5
+  static cenarioDerrota + #200, #1536
+  static cenarioDerrota + #201, #1536
+  static cenarioDerrota + #202, #1536
+  static cenarioDerrota + #203, #0
+  static cenarioDerrota + #204, #0
+  static cenarioDerrota + #205, #0
+  static cenarioDerrota + #206, #0
+  static cenarioDerrota + #207, #0
+  static cenarioDerrota + #208, #0
+  static cenarioDerrota + #209, #1536
+  static cenarioDerrota + #210, #1536
+  static cenarioDerrota + #211, #1536
+  static cenarioDerrota + #212, #1536
+  static cenarioDerrota + #213, #1536
+  static cenarioDerrota + #214, #1536
+  static cenarioDerrota + #215, #1536
+  static cenarioDerrota + #216, #2304
+  static cenarioDerrota + #217, #2304
+  static cenarioDerrota + #218, #2304
+  static cenarioDerrota + #219, #2304
+  static cenarioDerrota + #220, #1536
+  static cenarioDerrota + #221, #1536
+  static cenarioDerrota + #222, #1536
+  static cenarioDerrota + #223, #1536
+  static cenarioDerrota + #224, #1536
+  static cenarioDerrota + #225, #1536
+  static cenarioDerrota + #226, #0
+  static cenarioDerrota + #227, #0
+  static cenarioDerrota + #228, #0
+  static cenarioDerrota + #229, #0
+  static cenarioDerrota + #230, #0
+  static cenarioDerrota + #231, #0
+  static cenarioDerrota + #232, #0
+  static cenarioDerrota + #233, #1536
+  static cenarioDerrota + #234, #1536
+  static cenarioDerrota + #235, #1536
+  static cenarioDerrota + #236, #1536
+  static cenarioDerrota + #237, #1536
+  static cenarioDerrota + #238, #1536
+  static cenarioDerrota + #239, #1536
+
+  ;Linha 6
+  static cenarioDerrota + #240, #1536
+  static cenarioDerrota + #241, #1536
+  static cenarioDerrota + #242, #1536
+  static cenarioDerrota + #243, #1536
+  static cenarioDerrota + #244, #1536
+  static cenarioDerrota + #245, #0
+  static cenarioDerrota + #246, #0
+  static cenarioDerrota + #247, #0
+  static cenarioDerrota + #248, #1536
+  static cenarioDerrota + #249, #1536
+  static cenarioDerrota + #250, #1536
+  static cenarioDerrota + #251, #1536
+  static cenarioDerrota + #252, #1536
+  static cenarioDerrota + #253, #1536
+  static cenarioDerrota + #254, #1536
+  static cenarioDerrota + #255, #1536
+  static cenarioDerrota + #256, #1536
+  static cenarioDerrota + #257, #1536
+  static cenarioDerrota + #258, #2304
+  static cenarioDerrota + #259, #2304
+  static cenarioDerrota + #260, #2304
+  static cenarioDerrota + #261, #2304
+  static cenarioDerrota + #262, #2304
+  static cenarioDerrota + #263, #1536
+  static cenarioDerrota + #264, #1536
+  static cenarioDerrota + #265, #1536
+  static cenarioDerrota + #266, #1536
+  static cenarioDerrota + #267, #1536
+  static cenarioDerrota + #268, #0
+  static cenarioDerrota + #269, #0
+  static cenarioDerrota + #270, #0
+  static cenarioDerrota + #271, #0
+  static cenarioDerrota + #272, #1536
+  static cenarioDerrota + #273, #1536
+  static cenarioDerrota + #274, #1536
+  static cenarioDerrota + #275, #1536
+  static cenarioDerrota + #276, #1536
+  static cenarioDerrota + #277, #1536
+  static cenarioDerrota + #278, #1536
+  static cenarioDerrota + #279, #1536
+
+  ;Linha 7
+  static cenarioDerrota + #280, #1536
+  static cenarioDerrota + #281, #1536
+  static cenarioDerrota + #282, #1536
+  static cenarioDerrota + #283, #1536
+  static cenarioDerrota + #284, #1536
+  static cenarioDerrota + #285, #1536
+  static cenarioDerrota + #286, #1536
+  static cenarioDerrota + #287, #1536
+  static cenarioDerrota + #288, #1536
+  static cenarioDerrota + #289, #1536
+  static cenarioDerrota + #290, #1536
+  static cenarioDerrota + #291, #1536
+  static cenarioDerrota + #292, #1536
+  static cenarioDerrota + #293, #1536
+  static cenarioDerrota + #294, #1536
+  static cenarioDerrota + #295, #1536
+  static cenarioDerrota + #296, #1536
+  static cenarioDerrota + #297, #1536
+  static cenarioDerrota + #298, #1536
+  static cenarioDerrota + #299, #2304
+  static cenarioDerrota + #300, #2304
+  static cenarioDerrota + #301, #2304
+  static cenarioDerrota + #302, #2304
+  static cenarioDerrota + #303, #2304
+  static cenarioDerrota + #304, #1536
+  static cenarioDerrota + #305, #1536
+  static cenarioDerrota + #306, #1536
+  static cenarioDerrota + #307, #1536
+  static cenarioDerrota + #308, #1536
+  static cenarioDerrota + #309, #1536
+  static cenarioDerrota + #310, #1536
+  static cenarioDerrota + #311, #1536
+  static cenarioDerrota + #312, #1536
+  static cenarioDerrota + #313, #1536
+  static cenarioDerrota + #314, #1536
+  static cenarioDerrota + #315, #1536
+  static cenarioDerrota + #316, #1536
+  static cenarioDerrota + #317, #1536
+  static cenarioDerrota + #318, #1536
+  static cenarioDerrota + #319, #1536
+
+  ;Linha 8
+  static cenarioDerrota + #320, #1536
+  static cenarioDerrota + #321, #1536
+  static cenarioDerrota + #322, #1536
+  static cenarioDerrota + #323, #1536
+  static cenarioDerrota + #324, #1536
+  static cenarioDerrota + #325, #1536
+  static cenarioDerrota + #326, #1536
+  static cenarioDerrota + #327, #1536
+  static cenarioDerrota + #328, #1536
+  static cenarioDerrota + #329, #1536
+  static cenarioDerrota + #330, #1536
+  static cenarioDerrota + #331, #1536
+  static cenarioDerrota + #332, #1536
+  static cenarioDerrota + #333, #1536
+  static cenarioDerrota + #334, #1536
+  static cenarioDerrota + #335, #1536
+  static cenarioDerrota + #336, #1536
+  static cenarioDerrota + #337, #1536
+  static cenarioDerrota + #338, #1536
+  static cenarioDerrota + #339, #2304
+  static cenarioDerrota + #340, #2304
+  static cenarioDerrota + #341, #2816
+  static cenarioDerrota + #342, #2304
+  static cenarioDerrota + #343, #2304
+  static cenarioDerrota + #344, #2304
+  static cenarioDerrota + #345, #2304
+  static cenarioDerrota + #346, #1536
+  static cenarioDerrota + #347, #1536
+  static cenarioDerrota + #348, #1536
+  static cenarioDerrota + #349, #1536
+  static cenarioDerrota + #350, #2304
+  static cenarioDerrota + #351, #2304
+  static cenarioDerrota + #352, #1536
+  static cenarioDerrota + #353, #1536
+  static cenarioDerrota + #354, #1536
+  static cenarioDerrota + #355, #1536
+  static cenarioDerrota + #356, #1536
+  static cenarioDerrota + #357, #1536
+  static cenarioDerrota + #358, #1536
+  static cenarioDerrota + #359, #1536
+
+  ;Linha 9
+  static cenarioDerrota + #360, #1536
+  static cenarioDerrota + #361, #1536
+  static cenarioDerrota + #362, #1536
+  static cenarioDerrota + #363, #768
+  static cenarioDerrota + #364, #768
+  static cenarioDerrota + #365, #768
+  static cenarioDerrota + #366, #1536
+  static cenarioDerrota + #367, #1536
+  static cenarioDerrota + #368, #1536
+  static cenarioDerrota + #369, #1536
+  static cenarioDerrota + #370, #2304
+  static cenarioDerrota + #371, #2304
+  static cenarioDerrota + #372, #2304
+  static cenarioDerrota + #373, #2304
+  static cenarioDerrota + #374, #1536
+  static cenarioDerrota + #375, #1536
+  static cenarioDerrota + #376, #2304
+  static cenarioDerrota + #377, #2304
+  static cenarioDerrota + #378, #2304
+  static cenarioDerrota + #379, #2304
+  static cenarioDerrota + #380, #2816
+  static cenarioDerrota + #381, #2816
+  static cenarioDerrota + #382, #2304
+  static cenarioDerrota + #383, #2304
+  static cenarioDerrota + #384, #2304
+  static cenarioDerrota + #385, #2304
+  static cenarioDerrota + #386, #2304
+  static cenarioDerrota + #387, #1536
+  static cenarioDerrota + #388, #2304
+  static cenarioDerrota + #389, #2304
+  static cenarioDerrota + #390, #2304
+  static cenarioDerrota + #391, #2304
+  static cenarioDerrota + #392, #1536
+  static cenarioDerrota + #393, #1536
+  static cenarioDerrota + #394, #1536
+  static cenarioDerrota + #395, #1536
+  static cenarioDerrota + #396, #1536
+  static cenarioDerrota + #397, #1536
+  static cenarioDerrota + #398, #1536
+  static cenarioDerrota + #399, #1536
+
+  ;Linha 10
+  static cenarioDerrota + #400, #1536
+  static cenarioDerrota + #401, #1536
+  static cenarioDerrota + #402, #1536
+  static cenarioDerrota + #403, #768
+  static cenarioDerrota + #404, #768
+  static cenarioDerrota + #405, #768
+  static cenarioDerrota + #406, #768
+  static cenarioDerrota + #407, #1536
+  static cenarioDerrota + #408, #1536
+  static cenarioDerrota + #409, #1536
+  static cenarioDerrota + #410, #1536
+  static cenarioDerrota + #411, #2304
+  static cenarioDerrota + #412, #2304
+  static cenarioDerrota + #413, #2304
+  static cenarioDerrota + #414, #2304
+  static cenarioDerrota + #415, #2304
+  static cenarioDerrota + #416, #2304
+  static cenarioDerrota + #417, #2304
+  static cenarioDerrota + #418, #2816
+  static cenarioDerrota + #419, #2816
+  static cenarioDerrota + #420, #2816
+  static cenarioDerrota + #421, #2816
+  static cenarioDerrota + #422, #2816
+  static cenarioDerrota + #423, #2304
+  static cenarioDerrota + #424, #2304
+  static cenarioDerrota + #425, #2304
+  static cenarioDerrota + #426, #2304
+  static cenarioDerrota + #427, #2304
+  static cenarioDerrota + #428, #2304
+  static cenarioDerrota + #429, #2304
+  static cenarioDerrota + #430, #1536
+  static cenarioDerrota + #431, #2304
+  static cenarioDerrota + #432, #1536
+  static cenarioDerrota + #433, #1536
+  static cenarioDerrota + #434, #1536
+  static cenarioDerrota + #435, #1536
+  static cenarioDerrota + #436, #1536
+  static cenarioDerrota + #437, #1536
+  static cenarioDerrota + #438, #1536
+  static cenarioDerrota + #439, #1536
+
+  ;Linha 11
+  static cenarioDerrota + #440, #1536
+  static cenarioDerrota + #441, #1536
+  static cenarioDerrota + #442, #768
+  static cenarioDerrota + #443, #768
+  static cenarioDerrota + #444, #2048
+  static cenarioDerrota + #445, #2048
+  static cenarioDerrota + #446, #1536
+  static cenarioDerrota + #447, #1536
+  static cenarioDerrota + #448, #1536
+  static cenarioDerrota + #449, #1536
+  static cenarioDerrota + #450, #1536
+  static cenarioDerrota + #451, #2304
+  static cenarioDerrota + #452, #2304
+  static cenarioDerrota + #453, #2304
+  static cenarioDerrota + #454, #2304
+  static cenarioDerrota + #455, #2304
+  static cenarioDerrota + #456, #2304
+  static cenarioDerrota + #457, #2304
+  static cenarioDerrota + #458, #2816
+  static cenarioDerrota + #459, #2816
+  static cenarioDerrota + #460, #2048
+  static cenarioDerrota + #461, #2816
+  static cenarioDerrota + #462, #2816
+  static cenarioDerrota + #463, #2816
+  static cenarioDerrota + #464, #2816
+  static cenarioDerrota + #465, #2304
+  static cenarioDerrota + #466, #2304
+  static cenarioDerrota + #467, #2304
+  static cenarioDerrota + #468, #2304
+  static cenarioDerrota + #469, #2304
+  static cenarioDerrota + #470, #1536
+  static cenarioDerrota + #471, #1536
+  static cenarioDerrota + #472, #1536
+  static cenarioDerrota + #473, #1536
+  static cenarioDerrota + #474, #1536
+  static cenarioDerrota + #475, #1536
+  static cenarioDerrota + #476, #1536
+  static cenarioDerrota + #477, #1536
+  static cenarioDerrota + #478, #1536
+  static cenarioDerrota + #479, #1536
+
+  ;Linha 12
+  static cenarioDerrota + #480, #1536
+  static cenarioDerrota + #481, #1536
+  static cenarioDerrota + #482, #1536
+  static cenarioDerrota + #483, #1536
+  static cenarioDerrota + #484, #2048
+  static cenarioDerrota + #485, #1536
+  static cenarioDerrota + #486, #1536
+  static cenarioDerrota + #487, #1536
+  static cenarioDerrota + #488, #1536
+  static cenarioDerrota + #489, #1536
+  static cenarioDerrota + #490, #1536
+  static cenarioDerrota + #491, #1536
+  static cenarioDerrota + #492, #2304
+  static cenarioDerrota + #493, #2304
+  static cenarioDerrota + #494, #2304
+  static cenarioDerrota + #495, #2304
+  static cenarioDerrota + #496, #2816
+  static cenarioDerrota + #497, #2816
+  static cenarioDerrota + #498, #2816
+  static cenarioDerrota + #499, #2048
+  static cenarioDerrota + #500, #2048
+  static cenarioDerrota + #501, #2816
+  static cenarioDerrota + #502, #2816
+  static cenarioDerrota + #503, #2816
+  static cenarioDerrota + #504, #2816
+  static cenarioDerrota + #505, #2816
+  static cenarioDerrota + #506, #2816
+  static cenarioDerrota + #507, #2304
+  static cenarioDerrota + #508, #2304
+  static cenarioDerrota + #509, #1536
+  static cenarioDerrota + #510, #1536
+  static cenarioDerrota + #511, #1536
+  static cenarioDerrota + #512, #1536
+  static cenarioDerrota + #513, #1536
+  static cenarioDerrota + #514, #1536
+  static cenarioDerrota + #515, #1536
+  static cenarioDerrota + #516, #1536
+  static cenarioDerrota + #517, #1536
+  static cenarioDerrota + #518, #1536
+  static cenarioDerrota + #519, #1536
+
+  ;Linha 13
+  static cenarioDerrota + #520, #1536
+  static cenarioDerrota + #521, #1536
+  static cenarioDerrota + #522, #768
+  static cenarioDerrota + #523, #768
+  static cenarioDerrota + #524, #2048
+  static cenarioDerrota + #525, #768
+  static cenarioDerrota + #526, #1536
+  static cenarioDerrota + #527, #1536
+  static cenarioDerrota + #528, #1536
+  static cenarioDerrota + #529, #1536
+  static cenarioDerrota + #530, #1536
+  static cenarioDerrota + #531, #1536
+  static cenarioDerrota + #532, #2304
+  static cenarioDerrota + #533, #2304
+  static cenarioDerrota + #534, #2304
+  static cenarioDerrota + #535, #2816
+  static cenarioDerrota + #536, #2816
+  static cenarioDerrota + #537, #2048
+  static cenarioDerrota + #538, #2048
+  static cenarioDerrota + #539, #2048
+  static cenarioDerrota + #540, #2048
+  static cenarioDerrota + #541, #2048
+  static cenarioDerrota + #542, #2816
+  static cenarioDerrota + #543, #2816
+  static cenarioDerrota + #544, #2816
+  static cenarioDerrota + #545, #2816
+  static cenarioDerrota + #546, #2816
+  static cenarioDerrota + #547, #2816
+  static cenarioDerrota + #548, #2304
+  static cenarioDerrota + #549, #2304
+  static cenarioDerrota + #550, #2304
+  static cenarioDerrota + #551, #1536
+  static cenarioDerrota + #552, #1536
+  static cenarioDerrota + #553, #1536
+  static cenarioDerrota + #554, #1536
+  static cenarioDerrota + #555, #1536
+  static cenarioDerrota + #556, #1536
+  static cenarioDerrota + #557, #1536
+  static cenarioDerrota + #558, #1536
+  static cenarioDerrota + #559, #1536
+
+  ;Linha 14
+  static cenarioDerrota + #560, #1536
+  static cenarioDerrota + #561, #768
+  static cenarioDerrota + #562, #768
+  static cenarioDerrota + #563, #768
+  static cenarioDerrota + #564, #768
+  static cenarioDerrota + #565, #768
+  static cenarioDerrota + #566, #1536
+  static cenarioDerrota + #567, #1536
+  static cenarioDerrota + #568, #1536
+  static cenarioDerrota + #569, #1536
+  static cenarioDerrota + #570, #1536
+  static cenarioDerrota + #571, #2304
+  static cenarioDerrota + #572, #2304
+  static cenarioDerrota + #573, #2816
+  static cenarioDerrota + #574, #2816
+  static cenarioDerrota + #575, #2816
+  static cenarioDerrota + #576, #2048
+  static cenarioDerrota + #577, #1792
+  static cenarioDerrota + #578, #1792
+  static cenarioDerrota + #579, #1792
+  static cenarioDerrota + #580, #1792
+  static cenarioDerrota + #581, #2048
+  static cenarioDerrota + #582, #2048
+  static cenarioDerrota + #583, #2048
+  static cenarioDerrota + #584, #2048
+  static cenarioDerrota + #585, #2048
+  static cenarioDerrota + #586, #2048
+  static cenarioDerrota + #587, #2816
+  static cenarioDerrota + #588, #2816
+  static cenarioDerrota + #589, #2304
+  static cenarioDerrota + #590, #2304
+  static cenarioDerrota + #591, #1536
+  static cenarioDerrota + #592, #1536
+  static cenarioDerrota + #593, #1536
+  static cenarioDerrota + #594, #1536
+  static cenarioDerrota + #595, #1536
+  static cenarioDerrota + #596, #1536
+  static cenarioDerrota + #597, #1536
+  static cenarioDerrota + #598, #1536
+  static cenarioDerrota + #599, #1536
+
+  ;Linha 15
+  static cenarioDerrota + #600, #768
+  static cenarioDerrota + #601, #768
+  static cenarioDerrota + #602, #768
+  static cenarioDerrota + #603, #768
+  static cenarioDerrota + #604, #768
+  static cenarioDerrota + #605, #768
+  static cenarioDerrota + #606, #768
+  static cenarioDerrota + #607, #768
+  static cenarioDerrota + #608, #2048
+  static cenarioDerrota + #609, #1536
+  static cenarioDerrota + #610, #1536
+  static cenarioDerrota + #611, #2304
+  static cenarioDerrota + #612, #2304
+  static cenarioDerrota + #613, #2816
+  static cenarioDerrota + #614, #2048
+  static cenarioDerrota + #615, #2048
+  static cenarioDerrota + #616, #2048
+  static cenarioDerrota + #617, #1792
+  static cenarioDerrota + #618, #1792
+  static cenarioDerrota + #619, #0
+  static cenarioDerrota + #620, #0
+  static cenarioDerrota + #621, #1792
+  static cenarioDerrota + #622, #1792
+  static cenarioDerrota + #623, #0
+  static cenarioDerrota + #624, #1792
+  static cenarioDerrota + #625, #1792
+  static cenarioDerrota + #626, #2048
+  static cenarioDerrota + #627, #2816
+  static cenarioDerrota + #628, #2816
+  static cenarioDerrota + #629, #2304
+  static cenarioDerrota + #630, #2304
+  static cenarioDerrota + #631, #1536
+  static cenarioDerrota + #632, #1536
+  static cenarioDerrota + #633, #1536
+  static cenarioDerrota + #634, #1536
+  static cenarioDerrota + #635, #1536
+  static cenarioDerrota + #636, #1536
+  static cenarioDerrota + #637, #1536
+  static cenarioDerrota + #638, #1536
+  static cenarioDerrota + #639, #1536
+
+  ;Linha 16
+  static cenarioDerrota + #640, #768
+  static cenarioDerrota + #641, #1536
+  static cenarioDerrota + #642, #768
+  static cenarioDerrota + #643, #768
+  static cenarioDerrota + #644, #768
+  static cenarioDerrota + #645, #768
+  static cenarioDerrota + #646, #1536
+  static cenarioDerrota + #647, #1536
+  static cenarioDerrota + #648, #1536
+  static cenarioDerrota + #649, #1536
+  static cenarioDerrota + #650, #1536
+  static cenarioDerrota + #651, #2304
+  static cenarioDerrota + #652, #2304
+  static cenarioDerrota + #653, #2816
+  static cenarioDerrota + #654, #2816
+  static cenarioDerrota + #655, #2816
+  static cenarioDerrota + #656, #2048
+  static cenarioDerrota + #657, #2048
+  static cenarioDerrota + #658, #2048
+  static cenarioDerrota + #659, #1792
+  static cenarioDerrota + #660, #0
+  static cenarioDerrota + #661, #0
+  static cenarioDerrota + #662, #0
+  static cenarioDerrota + #663, #0
+  static cenarioDerrota + #664, #0
+  static cenarioDerrota + #665, #1792
+  static cenarioDerrota + #666, #2048
+  static cenarioDerrota + #667, #2816
+  static cenarioDerrota + #668, #2816
+  static cenarioDerrota + #669, #2304
+  static cenarioDerrota + #670, #2304
+  static cenarioDerrota + #671, #2304
+  static cenarioDerrota + #672, #1536
+  static cenarioDerrota + #673, #1536
+  static cenarioDerrota + #674, #1536
+  static cenarioDerrota + #675, #1536
+  static cenarioDerrota + #676, #1536
+  static cenarioDerrota + #677, #1536
+  static cenarioDerrota + #678, #1536
+  static cenarioDerrota + #679, #1536
+
+  ;Linha 17
+  static cenarioDerrota + #680, #2048
+  static cenarioDerrota + #681, #1536
+  static cenarioDerrota + #682, #768
+  static cenarioDerrota + #683, #768
+  static cenarioDerrota + #684, #768
+  static cenarioDerrota + #685, #768
+  static cenarioDerrota + #686, #768
+  static cenarioDerrota + #687, #1536
+  static cenarioDerrota + #688, #1536
+  static cenarioDerrota + #689, #1536
+  static cenarioDerrota + #690, #1536
+  static cenarioDerrota + #691, #1536
+  static cenarioDerrota + #692, #2304
+  static cenarioDerrota + #693, #2304
+  static cenarioDerrota + #694, #2304
+  static cenarioDerrota + #695, #2816
+  static cenarioDerrota + #696, #2816
+  static cenarioDerrota + #697, #2816
+  static cenarioDerrota + #698, #2048
+  static cenarioDerrota + #699, #1792
+  static cenarioDerrota + #700, #0
+  static cenarioDerrota + #701, #0
+  static cenarioDerrota + #702, #0
+  static cenarioDerrota + #703, #0
+  static cenarioDerrota + #704, #1792
+  static cenarioDerrota + #705, #1792
+  static cenarioDerrota + #706, #2048
+  static cenarioDerrota + #707, #2048
+  static cenarioDerrota + #708, #2816
+  static cenarioDerrota + #709, #2304
+  static cenarioDerrota + #710, #2304
+  static cenarioDerrota + #711, #2304
+  static cenarioDerrota + #712, #1536
+  static cenarioDerrota + #713, #1536
+  static cenarioDerrota + #714, #1536
+  static cenarioDerrota + #715, #1536
+  static cenarioDerrota + #716, #1536
+  static cenarioDerrota + #717, #1536
+  static cenarioDerrota + #718, #1536
+  static cenarioDerrota + #719, #1536
+
+  ;Linha 18
+  static cenarioDerrota + #720, #1536
+  static cenarioDerrota + #721, #1536
+  static cenarioDerrota + #722, #768
+  static cenarioDerrota + #723, #1536
+  static cenarioDerrota + #724, #1536
+  static cenarioDerrota + #725, #1536
+  static cenarioDerrota + #726, #768
+  static cenarioDerrota + #727, #1536
+  static cenarioDerrota + #728, #1536
+  static cenarioDerrota + #729, #1536
+  static cenarioDerrota + #730, #2304
+  static cenarioDerrota + #731, #1536
+  static cenarioDerrota + #732, #2304
+  static cenarioDerrota + #733, #2304
+  static cenarioDerrota + #734, #2304
+  static cenarioDerrota + #735, #2816
+  static cenarioDerrota + #736, #2816
+  static cenarioDerrota + #737, #2048
+  static cenarioDerrota + #738, #2048
+  static cenarioDerrota + #739, #1792
+  static cenarioDerrota + #740, #0
+  static cenarioDerrota + #741, #0
+  static cenarioDerrota + #742, #0
+  static cenarioDerrota + #743, #0
+  static cenarioDerrota + #744, #1792
+  static cenarioDerrota + #745, #2048
+  static cenarioDerrota + #746, #2048
+  static cenarioDerrota + #747, #2048
+  static cenarioDerrota + #748, #2816
+  static cenarioDerrota + #749, #2304
+  static cenarioDerrota + #750, #2304
+  static cenarioDerrota + #751, #2304
+  static cenarioDerrota + #752, #2304
+  static cenarioDerrota + #753, #1536
+  static cenarioDerrota + #754, #1536
+  static cenarioDerrota + #755, #1536
+  static cenarioDerrota + #756, #1536
+  static cenarioDerrota + #757, #1536
+  static cenarioDerrota + #758, #1536
+  static cenarioDerrota + #759, #1536
+
+  ;Linha 19
+  static cenarioDerrota + #760, #1536
+  static cenarioDerrota + #761, #1536
+  static cenarioDerrota + #762, #768
+  static cenarioDerrota + #763, #1536
+  static cenarioDerrota + #764, #1536
+  static cenarioDerrota + #765, #1536
+  static cenarioDerrota + #766, #768
+  static cenarioDerrota + #767, #1536
+  static cenarioDerrota + #768, #1536
+  static cenarioDerrota + #769, #1536
+  static cenarioDerrota + #770, #2304
+  static cenarioDerrota + #771, #2304
+  static cenarioDerrota + #772, #2304
+  static cenarioDerrota + #773, #2304
+  static cenarioDerrota + #774, #2304
+  static cenarioDerrota + #775, #2048
+  static cenarioDerrota + #776, #2048
+  static cenarioDerrota + #777, #2048
+  static cenarioDerrota + #778, #1792
+  static cenarioDerrota + #779, #0
+  static cenarioDerrota + #780, #0
+  static cenarioDerrota + #781, #0
+  static cenarioDerrota + #782, #0
+  static cenarioDerrota + #783, #0
+  static cenarioDerrota + #784, #1792
+  static cenarioDerrota + #785, #2048
+  static cenarioDerrota + #786, #2048
+  static cenarioDerrota + #787, #2816
+  static cenarioDerrota + #788, #2816
+  static cenarioDerrota + #789, #2304
+  static cenarioDerrota + #790, #1536
+  static cenarioDerrota + #791, #2304
+  static cenarioDerrota + #792, #2304
+  static cenarioDerrota + #793, #1536
+  static cenarioDerrota + #794, #1536
+  static cenarioDerrota + #795, #1536
+  static cenarioDerrota + #796, #1536
+  static cenarioDerrota + #797, #1536
+  static cenarioDerrota + #798, #1536
+  static cenarioDerrota + #799, #1536
+
+  ;Linha 20
+  static cenarioDerrota + #800, #1536
+  static cenarioDerrota + #801, #1536
+  static cenarioDerrota + #802, #768
+  static cenarioDerrota + #803, #768
+  static cenarioDerrota + #804, #1536
+  static cenarioDerrota + #805, #1536
+  static cenarioDerrota + #806, #768
+  static cenarioDerrota + #807, #768
+  static cenarioDerrota + #808, #1536
+  static cenarioDerrota + #809, #1536
+  static cenarioDerrota + #810, #2304
+  static cenarioDerrota + #811, #2304
+  static cenarioDerrota + #812, #2304
+  static cenarioDerrota + #813, #2304
+  static cenarioDerrota + #814, #2816
+  static cenarioDerrota + #815, #2048
+  static cenarioDerrota + #816, #2048
+  static cenarioDerrota + #817, #1792
+  static cenarioDerrota + #818, #0
+  static cenarioDerrota + #819, #0
+  static cenarioDerrota + #820, #0
+  static cenarioDerrota + #821, #1792
+  static cenarioDerrota + #822, #1792
+  static cenarioDerrota + #823, #1792
+  static cenarioDerrota + #824, #1792
+  static cenarioDerrota + #825, #2048
+  static cenarioDerrota + #826, #2816
+  static cenarioDerrota + #827, #2816
+  static cenarioDerrota + #828, #2816
+  static cenarioDerrota + #829, #2304
+  static cenarioDerrota + #830, #1536
+  static cenarioDerrota + #831, #1536
+  static cenarioDerrota + #832, #1536
+  static cenarioDerrota + #833, #1536
+  static cenarioDerrota + #834, #1536
+  static cenarioDerrota + #835, #1536
+  static cenarioDerrota + #836, #1536
+  static cenarioDerrota + #837, #1536
+  static cenarioDerrota + #838, #1536
+  static cenarioDerrota + #839, #1536
+
+  ;Linha 21
+  static cenarioDerrota + #840, #2560
+  static cenarioDerrota + #841, #2560
+  static cenarioDerrota + #842, #2560
+  static cenarioDerrota + #843, #2560
+  static cenarioDerrota + #844, #2560
+  static cenarioDerrota + #845, #2560
+  static cenarioDerrota + #846, #2560
+  static cenarioDerrota + #847, #2560
+  static cenarioDerrota + #848, #2560
+  static cenarioDerrota + #849, #2304
+  static cenarioDerrota + #850, #2304
+  static cenarioDerrota + #851, #2304
+  static cenarioDerrota + #852, #2305
+  static cenarioDerrota + #853, #2304
+  static cenarioDerrota + #854, #2816
+  static cenarioDerrota + #855, #2816
+  static cenarioDerrota + #856, #2048
+  static cenarioDerrota + #857, #1792
+  static cenarioDerrota + #858, #0
+  static cenarioDerrota + #859, #0
+  static cenarioDerrota + #860, #1792
+  static cenarioDerrota + #861, #2048
+  static cenarioDerrota + #862, #2048
+  static cenarioDerrota + #863, #2048
+  static cenarioDerrota + #864, #1792
+  static cenarioDerrota + #865, #2048
+  static cenarioDerrota + #866, #2816
+  static cenarioDerrota + #867, #2816
+  static cenarioDerrota + #868, #2304
+  static cenarioDerrota + #869, #2304
+  static cenarioDerrota + #870, #2560
+  static cenarioDerrota + #871, #2560
+  static cenarioDerrota + #872, #2560
+  static cenarioDerrota + #873, #2560
+  static cenarioDerrota + #874, #2305
+  static cenarioDerrota + #875, #2560
+  static cenarioDerrota + #876, #2560
+  static cenarioDerrota + #877, #2305
+  static cenarioDerrota + #878, #2560
+  static cenarioDerrota + #879, #2560
+
+  ;Linha 22
+  static cenarioDerrota + #880, #2560
+  static cenarioDerrota + #881, #2560
+  static cenarioDerrota + #882, #256
+  static cenarioDerrota + #883, #256
+  static cenarioDerrota + #884, #2560
+  static cenarioDerrota + #885, #256
+  static cenarioDerrota + #886, #2560
+  static cenarioDerrota + #887, #256
+  static cenarioDerrota + #888, #2560
+  static cenarioDerrota + #889, #2304
+  static cenarioDerrota + #890, #2304
+  static cenarioDerrota + #891, #2304
+  static cenarioDerrota + #892, #256
+  static cenarioDerrota + #893, #2304
+  static cenarioDerrota + #894, #2304
+  static cenarioDerrota + #895, #2816
+  static cenarioDerrota + #896, #2816
+  static cenarioDerrota + #897, #2048
+  static cenarioDerrota + #898, #1792
+  static cenarioDerrota + #899, #1792
+  static cenarioDerrota + #900, #2048
+  static cenarioDerrota + #901, #2048
+  static cenarioDerrota + #902, #2816
+  static cenarioDerrota + #903, #2048
+  static cenarioDerrota + #904, #1792
+  static cenarioDerrota + #905, #2048
+  static cenarioDerrota + #906, #2816
+  static cenarioDerrota + #907, #2816
+  static cenarioDerrota + #908, #2816
+  static cenarioDerrota + #909, #2304
+  static cenarioDerrota + #910, #2304
+  static cenarioDerrota + #911, #2560
+  static cenarioDerrota + #912, #256
+  static cenarioDerrota + #913, #2560
+  static cenarioDerrota + #914, #256
+  static cenarioDerrota + #915, #2560
+  static cenarioDerrota + #916, #2560
+  static cenarioDerrota + #917, #256
+  static cenarioDerrota + #918, #2560
+  static cenarioDerrota + #919, #256
+
+  ;Linha 23
+  static cenarioDerrota + #920, #256
+  static cenarioDerrota + #921, #256
+  static cenarioDerrota + #922, #256
+  static cenarioDerrota + #923, #2560
+  static cenarioDerrota + #924, #256
+  static cenarioDerrota + #925, #256
+  static cenarioDerrota + #926, #256
+  static cenarioDerrota + #927, #256
+  static cenarioDerrota + #928, #2304
+  static cenarioDerrota + #929, #256
+  static cenarioDerrota + #930, #2304
+  static cenarioDerrota + #931, #256
+  static cenarioDerrota + #932, #2560
+  static cenarioDerrota + #933, #2560
+  static cenarioDerrota + #934, #2304
+  static cenarioDerrota + #935, #2816
+  static cenarioDerrota + #936, #2816
+  static cenarioDerrota + #937, #2048
+  static cenarioDerrota + #938, #1792
+  static cenarioDerrota + #939, #2048
+  static cenarioDerrota + #940, #2048
+  static cenarioDerrota + #941, #2816
+  static cenarioDerrota + #942, #2816
+  static cenarioDerrota + #943, #2048
+  static cenarioDerrota + #944, #2048
+  static cenarioDerrota + #945, #2048
+  static cenarioDerrota + #946, #2816
+  static cenarioDerrota + #947, #2816
+  static cenarioDerrota + #948, #2304
+  static cenarioDerrota + #949, #2304
+  static cenarioDerrota + #950, #2304
+  static cenarioDerrota + #951, #2304
+  static cenarioDerrota + #952, #256
+  static cenarioDerrota + #953, #256
+  static cenarioDerrota + #954, #2560
+  static cenarioDerrota + #955, #256
+  static cenarioDerrota + #956, #256
+  static cenarioDerrota + #957, #256
+  static cenarioDerrota + #958, #256
+  static cenarioDerrota + #959, #2560
+
+  ;Linha 24
+  static cenarioDerrota + #960, #256
+  static cenarioDerrota + #961, #256
+  static cenarioDerrota + #962, #256
+  static cenarioDerrota + #963, #256
+  static cenarioDerrota + #964, #256
+  static cenarioDerrota + #965, #256
+  static cenarioDerrota + #966, #256
+  static cenarioDerrota + #967, #256
+  static cenarioDerrota + #968, #2304
+  static cenarioDerrota + #969, #256
+  static cenarioDerrota + #970, #256
+  static cenarioDerrota + #971, #256
+  static cenarioDerrota + #972, #256
+  static cenarioDerrota + #973, #256
+  static cenarioDerrota + #974, #2304
+  static cenarioDerrota + #975, #2304
+  static cenarioDerrota + #976, #2816
+  static cenarioDerrota + #977, #2816
+  static cenarioDerrota + #978, #2048
+  static cenarioDerrota + #979, #2048
+  static cenarioDerrota + #980, #2816
+  static cenarioDerrota + #981, #2816
+  static cenarioDerrota + #982, #2816
+  static cenarioDerrota + #983, #2816
+  static cenarioDerrota + #984, #2816
+  static cenarioDerrota + #985, #2816
+  static cenarioDerrota + #986, #2816
+  static cenarioDerrota + #987, #2816
+  static cenarioDerrota + #988, #2304
+  static cenarioDerrota + #989, #2304
+  static cenarioDerrota + #990, #256
+  static cenarioDerrota + #991, #2304
+  static cenarioDerrota + #992, #256
+  static cenarioDerrota + #993, #256
+  static cenarioDerrota + #994, #256
+  static cenarioDerrota + #995, #256
+  static cenarioDerrota + #996, #256
+  static cenarioDerrota + #997, #256
+  static cenarioDerrota + #998, #256
+  static cenarioDerrota + #999, #256
+
+  ;Linha 25
+  static cenarioDerrota + #1000, #256
+  static cenarioDerrota + #1001, #256
+  static cenarioDerrota + #1002, #256
+  static cenarioDerrota + #1003, #256
+  static cenarioDerrota + #1004, #256
+  static cenarioDerrota + #1005, #256
+  static cenarioDerrota + #1006, #256
+  static cenarioDerrota + #1007, #256
+  static cenarioDerrota + #1008, #256
+  static cenarioDerrota + #1009, #256
+  static cenarioDerrota + #1010, #256
+  static cenarioDerrota + #1011, #256
+  static cenarioDerrota + #1012, #256
+  static cenarioDerrota + #1013, #2304
+  static cenarioDerrota + #1014, #2304
+  static cenarioDerrota + #1015, #2304
+  static cenarioDerrota + #1016, #2816
+  static cenarioDerrota + #1017, #2816
+  static cenarioDerrota + #1018, #2816
+  static cenarioDerrota + #1019, #2816
+  static cenarioDerrota + #1020, #2816
+  static cenarioDerrota + #1021, #2816
+  static cenarioDerrota + #1022, #2816
+  static cenarioDerrota + #1023, #2816
+  static cenarioDerrota + #1024, #2304
+  static cenarioDerrota + #1025, #2304
+  static cenarioDerrota + #1026, #2816
+  static cenarioDerrota + #1027, #2304
+  static cenarioDerrota + #1028, #2304
+  static cenarioDerrota + #1029, #2304
+  static cenarioDerrota + #1030, #256
+  static cenarioDerrota + #1031, #256
+  static cenarioDerrota + #1032, #256
+  static cenarioDerrota + #1033, #256
+  static cenarioDerrota + #1034, #256
+  static cenarioDerrota + #1035, #256
+  static cenarioDerrota + #1036, #256
+  static cenarioDerrota + #1037, #256
+  static cenarioDerrota + #1038, #256
+  static cenarioDerrota + #1039, #256
+
+  ;Linha 26
+  static cenarioDerrota + #1040, #256
+  static cenarioDerrota + #1041, #256
+  static cenarioDerrota + #1042, #256
+  static cenarioDerrota + #1043, #256
+  static cenarioDerrota + #1044, #256
+  static cenarioDerrota + #1045, #256
+  static cenarioDerrota + #1046, #256
+  static cenarioDerrota + #1047, #256
+  static cenarioDerrota + #1048, #256
+  static cenarioDerrota + #1049, #256
+  static cenarioDerrota + #1050, #256
+  static cenarioDerrota + #1051, #256
+  static cenarioDerrota + #1052, #2304
+  static cenarioDerrota + #1053, #2304
+  static cenarioDerrota + #1054, #256
+  static cenarioDerrota + #1055, #2304
+  static cenarioDerrota + #1056, #2304
+  static cenarioDerrota + #1057, #2816
+  static cenarioDerrota + #1058, #2816
+  static cenarioDerrota + #1059, #2816
+  static cenarioDerrota + #1060, #2816
+  static cenarioDerrota + #1061, #2304
+  static cenarioDerrota + #1062, #2304
+  static cenarioDerrota + #1063, #2304
+  static cenarioDerrota + #1064, #2304
+  static cenarioDerrota + #1065, #2304
+  static cenarioDerrota + #1066, #2304
+  static cenarioDerrota + #1067, #2304
+  static cenarioDerrota + #1068, #256
+  static cenarioDerrota + #1069, #2304
+  static cenarioDerrota + #1070, #2304
+  static cenarioDerrota + #1071, #2304
+  static cenarioDerrota + #1072, #256
+  static cenarioDerrota + #1073, #256
+  static cenarioDerrota + #1074, #256
+  static cenarioDerrota + #1075, #256
+  static cenarioDerrota + #1076, #256
+  static cenarioDerrota + #1077, #256
+  static cenarioDerrota + #1078, #256
+  static cenarioDerrota + #1079, #256
+
+  ;Linha 27
+  static cenarioDerrota + #1080, #256
+  static cenarioDerrota + #1081, #256
+  static cenarioDerrota + #1082, #256
+  static cenarioDerrota + #1083, #256
+  static cenarioDerrota + #1084, #256
+  static cenarioDerrota + #1085, #256
+  static cenarioDerrota + #1086, #256
+  static cenarioDerrota + #1087, #256
+  static cenarioDerrota + #1088, #256
+  static cenarioDerrota + #1089, #256
+  static cenarioDerrota + #1090, #256
+  static cenarioDerrota + #1091, #256
+  static cenarioDerrota + #1092, #2304
+  static cenarioDerrota + #1093, #2304
+  static cenarioDerrota + #1094, #256
+  static cenarioDerrota + #1095, #2304
+  static cenarioDerrota + #1096, #2304
+  static cenarioDerrota + #1097, #2304
+  static cenarioDerrota + #1098, #2304
+  static cenarioDerrota + #1099, #2816
+  static cenarioDerrota + #1100, #2304
+  static cenarioDerrota + #1101, #2304
+  static cenarioDerrota + #1102, #2304
+  static cenarioDerrota + #1103, #256
+  static cenarioDerrota + #1104, #2304
+  static cenarioDerrota + #1105, #2304
+  static cenarioDerrota + #1106, #2304
+  static cenarioDerrota + #1107, #2304
+  static cenarioDerrota + #1108, #256
+  static cenarioDerrota + #1109, #256
+  static cenarioDerrota + #1110, #2304
+  static cenarioDerrota + #1111, #2304
+  static cenarioDerrota + #1112, #2304
+  static cenarioDerrota + #1113, #256
+  static cenarioDerrota + #1114, #256
+  static cenarioDerrota + #1115, #256
+  static cenarioDerrota + #1116, #256
+  static cenarioDerrota + #1117, #256
+  static cenarioDerrota + #1118, #256
+  static cenarioDerrota + #1119, #256
+
+  ;Linha 28
+  static cenarioDerrota + #1120, #256
+  static cenarioDerrota + #1121, #256
+  static cenarioDerrota + #1122, #256
+  static cenarioDerrota + #1123, #256
+  static cenarioDerrota + #1124, #256
+  static cenarioDerrota + #1125, #256
+  static cenarioDerrota + #1126, #256
+  static cenarioDerrota + #1127, #256
+  static cenarioDerrota + #1128, #256
+  static cenarioDerrota + #1129, #256
+  static cenarioDerrota + #1130, #256
+  static cenarioDerrota + #1131, #2304
+  static cenarioDerrota + #1132, #2304
+  static cenarioDerrota + #1133, #2304
+  static cenarioDerrota + #1134, #256
+  static cenarioDerrota + #1135, #256
+  static cenarioDerrota + #1136, #2304
+  static cenarioDerrota + #1137, #2304
+  static cenarioDerrota + #1138, #2304
+  static cenarioDerrota + #1139, #2304
+  static cenarioDerrota + #1140, #2304
+  static cenarioDerrota + #1141, #256
+  static cenarioDerrota + #1142, #256
+  static cenarioDerrota + #1143, #256
+  static cenarioDerrota + #1144, #256
+  static cenarioDerrota + #1145, #256
+  static cenarioDerrota + #1146, #2304
+  static cenarioDerrota + #1147, #2304
+  static cenarioDerrota + #1148, #256
+  static cenarioDerrota + #1149, #256
+  static cenarioDerrota + #1150, #256
+  static cenarioDerrota + #1151, #2304
+  static cenarioDerrota + #1152, #2304
+  static cenarioDerrota + #1153, #256
+  static cenarioDerrota + #1154, #256
+  static cenarioDerrota + #1155, #256
+  static cenarioDerrota + #1156, #256
+  static cenarioDerrota + #1157, #256
+  static cenarioDerrota + #1158, #256
+  static cenarioDerrota + #1159, #256
+
+  ;Linha 29
+  static cenarioDerrota + #1160, #256
+  static cenarioDerrota + #1161, #256
+  static cenarioDerrota + #1162, #256
+  static cenarioDerrota + #1163, #256
+  static cenarioDerrota + #1164, #256
+  static cenarioDerrota + #1165, #256
+  static cenarioDerrota + #1166, #256
+  static cenarioDerrota + #1167, #256
+  static cenarioDerrota + #1168, #256
+  static cenarioDerrota + #1169, #256
+  static cenarioDerrota + #1170, #2304
+  static cenarioDerrota + #1171, #256
+  static cenarioDerrota + #1172, #2304
+  static cenarioDerrota + #1173, #256
+  static cenarioDerrota + #1174, #256
+  static cenarioDerrota + #1175, #2304
+  static cenarioDerrota + #1176, #2304
+  static cenarioDerrota + #1177, #2304
+  static cenarioDerrota + #1178, #2304
+  static cenarioDerrota + #1179, #2304
+  static cenarioDerrota + #1180, #256
+  static cenarioDerrota + #1181, #256
+  static cenarioDerrota + #1182, #256
+  static cenarioDerrota + #1183, #256
+  static cenarioDerrota + #1184, #256
+  static cenarioDerrota + #1185, #256
+  static cenarioDerrota + #1186, #256
+  static cenarioDerrota + #1187, #256
+  static cenarioDerrota + #1188, #256
+  static cenarioDerrota + #1189, #256
+  static cenarioDerrota + #1190, #256
+  static cenarioDerrota + #1191, #256
+  static cenarioDerrota + #1192, #256
+  static cenarioDerrota + #1193, #256
+  static cenarioDerrota + #1194, #256
+  static cenarioDerrota + #1195, #256
+  static cenarioDerrota + #1196, #256
+  static cenarioDerrota + #1197, #256
+  static cenarioDerrota + #1198, #256
+  static cenarioDerrota + #1199, #256
+
+printcenarioDerrotaScreen:
+  push R0
+  push R1
+  push R2
+  push R3
+
+  loadn R0, #cenarioDerrota
+  loadn R1, #0
+  loadn R2, #1200
+
+  printcenarioDerrotaScreenLoop:
+
+    add R3,R0,R1
+    loadi R3, R3
+    outchar R3, R1
+    inc R1
+    cmp R1, R2
+
+    jne printcenarioDerrotaScreenLoop
 
   pop R3
   pop R2
