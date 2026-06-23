@@ -19,9 +19,170 @@ Delay:
     pop r1
     pop r0
     rts
-    ; O QUE FAZER:
-    ; Copiar a logica de delay do codigo 'nave.asm'.
-    ; E apenas um loop aninhado contando ate zero pra segurar o processador.
+
+; ===================================================================
+; AtualizaTempo: Incrementa o contador de ciclos e atualiza Tempo
+; Cada vez que TempoContador chega em 15, incrementa Tempo (1 segundo)
+; ===================================================================
+AtualizaTempo:
+    push r0
+    push r1
+
+    load r0, TempoContador
+    inc r0
+
+    loadn r1, #15           ; ~15 ciclos do loop principal = ~1 segundo
+    cmp r0, r1
+    jne AtualizaTempo_Salva
+
+    ; Chegou em 15 ciclos: incrementa o tempo e reseta o contador
+    loadn r0, #0
+    load r1, Tempo
+    inc r1
+
+    ; Limita o tempo em 999 para não estourar 3 dígitos
+    loadn r0, #999
+    cmp r1, r0
+    jle AtualizaTempo_SalvaTempo
+    loadn r1, #999
+
+AtualizaTempo_SalvaTempo:
+    store Tempo, r1
+    loadn r0, #0
+
+AtualizaTempo_Salva:
+    store TempoContador, r0
+
+    pop r1
+    pop r0
+    rts
+
+; ===================================================================
+; ImprimeContadores: Desenha o contador de bandeiras e o timer
+; Posição: Row 0 da tela, acima do tabuleiro
+; Bandeira à esquerda (col 11), Relogio à direita (col 25)
+; ===================================================================
+ImprimeContadores:
+    push r0
+    push r1
+    push r2
+    push r3
+    push r4
+    push r5
+
+    ; ===== CONTADOR DE BANDEIRAS (esquerda) =====
+    ; Imprime o ícone da bandeira (char 8) na posição 11 (row 0, col 11)
+    loadn r0, #8            ; char da bandeira
+    loadn r1, #11           ; posição na tela
+    outchar r0, r1
+
+    ; Limpa o sinal de menos (imprime espaço) na posição 12
+    loadn r5, #' '
+    loadn r1, #12
+    outchar r5, r1
+
+    ; Carrega BandeirasRestantes
+    load r0, BandeirasRestantes
+
+    ; Checa se é negativo (complemento de 2: valores > 32000 são negativos)
+    loadn r1, #32000
+    cmp r0, r1
+    jle ImprimeContadores_BandPos
+
+    ; Negativo: faz 0 - r0 para obter o absoluto
+    loadn r1, #0
+    sub r0, r1, r0
+
+    ; E imprime o sinal de menos
+    loadn r5, #'-'
+    loadn r1, #12
+    outchar r5, r1
+
+ImprimeContadores_BandPos:
+    ; r0 = valor absoluto (0..99 na prática)
+    ; Extrai dezena: quantas vezes cabe 10
+    loadn r2, #0            ; r2 = dezena
+    loadn r3, #10
+ImprimeContadores_BandDezLoop:
+    cmp r3, r0
+    jgr ImprimeContadores_BandDezFim  ; se 10 > r0 (r0 < 10), parou
+    sub r0, r0, r3
+    inc r2
+    jmp ImprimeContadores_BandDezLoop
+
+ImprimeContadores_BandDezFim:
+    ; r2 = dezena, r0 = unidade
+    loadn r4, #48           ; offset ASCII '0'
+
+    ; Imprime dezena na posição 13
+    add r5, r2, r4
+    loadn r1, #13
+    outchar r5, r1
+
+    ; Imprime unidade na posição 14
+    add r5, r0, r4
+    loadn r1, #14
+    outchar r5, r1
+
+    ; ===== CONTADOR DE TEMPO (direita) =====
+    ; Imprime o ícone do relógio (char 123) na posição 25
+    loadn r0, #123          ; char do relógio
+    loadn r1, #25
+    outchar r0, r1
+
+    ; Carrega Tempo
+    load r0, Tempo
+
+    ; Extrai centena
+    loadn r2, #0            ; r2 = centena
+    loadn r3, #100
+ImprimeContadores_TempCentLoop:
+    cmp r3, r0
+    jgr ImprimeContadores_TempCentFim  ; se 100 > r0 (r0 < 100), parou
+    sub r0, r0, r3
+    inc r2
+    jmp ImprimeContadores_TempCentLoop
+
+ImprimeContadores_TempCentFim:
+    ; r2 = centena, r0 = resto (0..99)
+
+    ; Extrai dezena
+    loadn r3, #0            ; r3 = dezena
+    loadn r4, #10
+ImprimeContadores_TempDezLoop:
+    cmp r4, r0
+    jgr ImprimeContadores_TempDezFim  ; se 10 > r0 (r0 < 10), parou
+    sub r0, r0, r4
+    inc r3
+    jmp ImprimeContadores_TempDezLoop
+
+ImprimeContadores_TempDezFim:
+    ; r2 = centena, r3 = dezena, r0 = unidade
+    loadn r4, #48           ; offset ASCII '0'
+
+    ; Imprime centena do tempo na posição 27
+    add r5, r2, r4
+    loadn r1, #27
+    outchar r5, r1
+
+    ; Imprime dezena do tempo na posição 28
+    add r5, r3, r4
+    loadn r1, #28
+    outchar r5, r1
+
+    ; Imprime unidade do tempo na posição 29
+    add r5, r0, r4
+    loadn r1, #29
+    outchar r5, r1
+
+    pop r5
+    pop r4
+    pop r3
+    pop r2
+    pop r1
+    pop r0
+    rts
+
 
 
 ; ===================================================================

@@ -11,6 +11,7 @@ main:
     ; primeira renderizacao
     call ImprimeTabuleiro
     call DesenhaCursor
+    call ImprimeContadores
 
 LoopPrincipal:
     load r0, GameOver
@@ -46,8 +47,10 @@ PulaVitoria:
 
     call ImprimeTabuleiro
     call DesenhaCursor
+    call ImprimeContadores
     
 LoopPrincipal_PulaRender:
+    call AtualizaTempo
     call Delay
 
     jmp LoopPrincipal

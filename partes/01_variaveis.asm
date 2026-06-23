@@ -18,6 +18,9 @@ GameOver: var #1        ; 0 = jogando, 1 = perdeu, 2 = venceu
 BombasRestantes: var #1 ; Quantidade de bombas no mapa (fixo: 15)
 CasasSeguras: var #1    ; casas sem bomba ainda nao reveladas (inicia em 85 = 100 - 15)
 PrimeiraJogada: var #1  ; Flag para indicar se eh o primeiro clique (1 = sim, 0 = nao)
+BandeirasRestantes: var #1 ; Bandeiras restantes (inicia igual ao numero de bombas)
+Tempo: var #1              ; Tempo em segundos desde o inicio
+TempoContador: var #1      ; Contador de ciclos para medir o tempo
 
 ; variaveis de input
 Letra: var #1           ; tecla lida do teclado

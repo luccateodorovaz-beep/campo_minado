@@ -44,9 +44,35 @@ AcaoF:
     loadn r1,#Tabuleiro
     add r1, r1, r0
     loadi r4, r1
+
+    ; Não permite colocar bandeira em casa já revelada
+    loadn r2, #2
+    and r3, r4, r2
+    jnz FinalAcaoJogador  ; se revelada, não faz nada
+
     loadn r2,#4           ; máscara do bit da flag (00000100)
+
+    ; Checa se já tinha bandeira antes de alternar
+    and r3, r4, r2        ; r3 = bit da flag atual
+    loadn r5, #0
+    cmp r3, r5
+    jne AcaoF_RemoveFlag  ; se já tinha flag, vai remover
+
+    ; Colocando bandeira: decrementa BandeirasRestantes
     xor r3, r2, r4
     storei r1, r3
+    load r5, BandeirasRestantes
+    dec r5
+    store BandeirasRestantes, r5
+    jmp FinalAcaoJogador
+
+AcaoF_RemoveFlag:
+    ; Removendo bandeira: incrementa BandeirasRestantes
+    xor r3, r2, r4
+    storei r1, r3
+    load r5, BandeirasRestantes
+    inc r5
+    store BandeirasRestantes, r5
     jmp FinalAcaoJogador
 
 ; --- AcaoEspaco: revela a casa atual ---

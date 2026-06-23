@@ -18,6 +18,11 @@ IniciaVariaveis:
 
     loadn r3, #25
     store BombasRestantes, r3
+    store BandeirasRestantes, r3
+
+    loadn r3, #0
+    store Tempo, r3
+    store TempoContador, r3
 
     loadn r3, #75
     store CasasSeguras, r3      ; 100 casas - 25 bombas = 75 casas seguras
