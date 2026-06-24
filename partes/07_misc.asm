@@ -31,11 +31,11 @@ AtualizaTempo:
     load r0, TempoContador
     inc r0
 
-    loadn r1, #15           ; ~15 ciclos do loop principal = ~1 segundo
+    loadn r1, #50000         ; Ajuste esse valor se precisar deixar mais rápido ou mais devagar
     cmp r0, r1
     jne AtualizaTempo_Salva
 
-    ; Chegou em 15 ciclos: incrementa o tempo e reseta o contador
+    ; Chegou no limite: incrementa o tempo e reseta o contador
     loadn r0, #0
     load r1, Tempo
     inc r1
@@ -49,6 +49,8 @@ AtualizaTempo:
 AtualizaTempo_SalvaTempo:
     store Tempo, r1
     loadn r0, #0
+    
+    call ImprimeContadores ; Atualiza a tela com o novo tempo
 
 AtualizaTempo_Salva:
     store TempoContador, r0
@@ -84,10 +86,10 @@ ImprimeContadores:
     ; Carrega BandeirasRestantes
     load r0, BandeirasRestantes
 
-    ; Checa se é negativo (complemento de 2: valores > 32000 são negativos)
-    loadn r1, #32000
-    cmp r0, r1
-    jle ImprimeContadores_BandPos
+    ; Checa se é negativo (verifica o bit 15)
+    loadn r1, #32768
+    and r1, r0, r1
+    jz ImprimeContadores_BandPos
 
     ; Negativo: faz 0 - r0 para obter o absoluto
     loadn r1, #0
@@ -125,10 +127,15 @@ ImprimeContadores_BandDezFim:
     outchar r5, r1
 
     ; ===== CONTADOR DE TEMPO (direita) =====
-    ; Imprime o ícone do relógio (char 123) na posição 25
+    ; Imprime o ícone do relógio (char 123) na posição 24
     loadn r0, #123          ; char do relógio
-    loadn r1, #25
+    loadn r1, #24
     outchar r0, r1
+
+    ; Limpa o espaço (deixa preto) na posição 25, entre o relógio e os números
+    loadn r5, #' '
+    loadn r1, #25
+    outchar r5, r1
 
     ; Carrega Tempo
     load r0, Tempo
@@ -160,19 +167,19 @@ ImprimeContadores_TempDezFim:
     ; r2 = centena, r3 = dezena, r0 = unidade
     loadn r4, #48           ; offset ASCII '0'
 
-    ; Imprime centena do tempo na posição 27
+    ; Imprime centena do tempo na posição 26
     add r5, r2, r4
+    loadn r1, #26
+    outchar r5, r1
+
+    ; Imprime dezena do tempo na posição 27
+    add r5, r3, r4
     loadn r1, #27
     outchar r5, r1
 
-    ; Imprime dezena do tempo na posição 28
-    add r5, r3, r4
-    loadn r1, #28
-    outchar r5, r1
-
-    ; Imprime unidade do tempo na posição 29
+    ; Imprime unidade do tempo na posição 28
     add r5, r0, r4
-    loadn r1, #29
+    loadn r1, #28
     outchar r5, r1
 
     pop r5
